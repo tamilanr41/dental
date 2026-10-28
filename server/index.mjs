@@ -43,19 +43,19 @@ if (!mongoUri) throw new Error("MONGODB_URI is required. Add it to the API envir
 const mongoClient = new MongoClient(mongoUri, { serverSelectionTimeoutMS: 10000 });
 await mongoClient.connect();
 const database = mongoClient.db(process.env.MONGODB_DB || undefined);
-const users = database.collection("users");
-const bookings = database.collection("bookings");
-const siteContent = database.collection("site_content");
-const counters = database.collection("counters");
+const users = database.collection("clinic_users");
+const bookings = database.collection("clinic_bookings");
+const siteContent = database.collection("clinic_site_content");
+const counters = database.collection("clinic_counters");
 
 await Promise.all([
-  users.createIndex({ email: 1 }, { unique: true }),
-  users.createIndex({ id: 1 }, { unique: true }),
-  bookings.createIndex({ id: 1 }, { unique: true }),
-  bookings.createIndex({ ref: 1 }, { unique: true }),
+  users.createIndex({ email: 1 }, { unique: true, partialFilterExpression: { email: { $type: "string" } } }),
+  users.createIndex({ id: 1 }, { unique: true, partialFilterExpression: { id: { $type: "number" } } }),
+  bookings.createIndex({ id: 1 }, { unique: true, partialFilterExpression: { id: { $type: "number" } } }),
+  bookings.createIndex({ ref: 1 }, { unique: true, partialFilterExpression: { ref: { $type: "string" } } }),
   bookings.createIndex({ date: 1, time: 1, status: 1 }),
   bookings.createIndex({ user_id: 1, date: -1, id: -1 }),
-  siteContent.createIndex({ id: 1 }, { unique: true }),
+  siteContent.createIndex({ id: 1 }, { unique: true, partialFilterExpression: { id: { $type: "number" } } }),
   siteContent.createIndex({ type: 1, published: 1, display_order: 1, id: -1 }),
 ]);
 
@@ -69,8 +69,8 @@ async function nextId(collectionName) {
 }
 
 async function migrateSqliteData() {
-  const migrationId = "sqlite-to-mongodb-v1";
-  if (await database.collection("migrations").findOne({ _id: migrationId })) return;
+  const migrationId = "sqlite-to-mongodb-v2";
+  if (await database.collection("clinic_migrations").findOne({ _id: migrationId })) return;
   const sqlitePath = path.join(DATA_DIR, "clinic.db");
   if (!fs.existsSync(sqlitePath)) return;
 
@@ -91,11 +91,11 @@ async function migrateSqliteData() {
         })));
       }
     }
-    for (const name of ["users", "bookings", "site_content"]) {
-      const latest = await database.collection(name).find({}).sort({ id: -1 }).limit(1).next();
+    for (const [name, collection] of [["clinic_users", users], ["clinic_bookings", bookings], ["clinic_site_content", siteContent]]) {
+      const latest = await collection.find({}).sort({ id: -1 }).limit(1).next();
       if (latest?.id) await counters.updateOne({ _id: name }, { $max: { sequence_value: latest.id } }, { upsert: true });
     }
-    await database.collection("migrations").insertOne({ _id: migrationId, completedAt: new Date().toISOString() });
+    await database.collection("clinic_migrations").insertOne({ _id: migrationId, completedAt: new Date().toISOString() });
     console.log("Migrated " + legacyUsers.length + " users, " + legacyBookings.length + " bookings, and " + legacyContent.length + " content items from the local SQLite database.");
   } finally {
     legacy.close();
@@ -419,7 +419,7 @@ async function createBooking({ user, patientName, patientPhone, patientEmail, se
   if (dentist && !DENTISTS.includes(dentist)) throw new HttpError(400, "Please choose a valid dentist.");
   const stamp = nowISO();
   const row = {
-    id: await nextId("bookings"),
+    id: await nextId("clinic_bookings"),
     ref: await makeRef(iso),
     user_id: user?.id ?? null,
     patient_name: patientName,
@@ -579,7 +579,7 @@ app.post("/api/admin/content", requireAdmin, async (req, res, next) => {
     const fields = normalizeContentInput(req.body);
     const stamp = nowISO();
     const row = {
-      id: await nextId("site_content"),
+      id: await nextId("clinic_site_content"),
       type: fields.type,
       title: fields.title,
       subtitle: fields.subtitle,
@@ -719,7 +719,7 @@ app.post("/api/auth/register", async (req, res, next) => {
     if (await users.findOne({ email })) throw new HttpError(409, "An account with this email already exists. Please sign in.");
 
     const user = {
-      id: await nextId("users"),
+      id: await nextId("clinic_users"),
       first_name: firstName,
       last_name: lastName,
       email,
@@ -1065,7 +1065,7 @@ async function seed() {
     return;
   }
   await users.insertOne({
-    id: await nextId("users"),
+    id: await nextId("clinic_users"),
     first_name: "Dr. Dinesh",
     last_name: "Kumar",
     email: adminEmail,

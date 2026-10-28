@@ -3,7 +3,7 @@ services:
     name: sri-saraswathi-clinic-api
     runtime: node
     plan: starter
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci --omit=dev
     startCommand: npm start
     disk:
       name: clinic-data

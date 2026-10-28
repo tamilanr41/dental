@@ -1,20 +1,29 @@
 # Netlify website and clinic API
 
-The Netlify `dist` folder contains the static website only. Login, registration, appointments, and the admin area need the Express API and persistent database configured in `render.yaml`.
+The Netlify `dist` folder contains the static website only. The Express API and its persistent database run as a separate Render service.
 
-## Deploy the API
+## Render backend settings
 
-1. Push this project to a Git repository and create a Render Blueprint from it using `render.yaml`.
-2. Set `SITE_ORIGIN` to the public website origin, for example `https://fancy-elf-3ea04c.netlify.app` (no trailing slash).
-3. Set a strong, unique `ADMIN_PASSWORD` before the first deploy. Keep it private. The initial admin email is `admin@srisaraswathidental.com`.
-4. Wait for the Render service health endpoint at `/api/health` to return `{ "ok": true }` and copy its `onrender.com` service URL.
+- **Build Command:** `npm ci --omit=dev`
+- **Start Command:** `npm start`
+- **SITE_ORIGIN:** `https://srisarashwathidentals.netlify.app` (no trailing slash)
+- **ADMIN_PASSWORD:** set a strong private password before the first start
+- **SESSION_SECRET:** generate this in Render; the Blueprint creates one automatically
 
-The Blueprint creates a persistent disk for the SQLite database and a generated session secret. The initial admin account is only created when `ADMIN_PASSWORD` is set; the server never prints that password.
+Do not run `npm run build` on the Render API service. It is the Vite/TypeScript frontend build and needs development packages. Netlify builds the frontend separately.
 
-## Connect and rebuild the Netlify frontend
+The Blueprint creates a persistent disk for SQLite. The initial admin email is `admin@srisaraswathidental.com`; its password is the value set in `ADMIN_PASSWORD`.
 
-1. Copy `.env.production.example` to `.env.production` and replace the example value with the Render service URL, such as `VITE_API_BASE_URL=https://your-service.onrender.com`.
-2. Run `npm run build`.
-3. Deploy the newly generated `dist` folder to Netlify. The built frontend sends auth cookies to the API with credentials enabled; the API accepts only the configured Netlify origin.
+After the Render service is live, check `<Render service URL>/api/health`; it should return `{ "ok": true }`.
 
-If you deploy only `dist` before deploying/configuring the API, login and registration cannot create or validate accounts. The forms now show a clear service setup error instead of a generic failure.
+## Netlify frontend settings
+
+Set `VITE_API_BASE_URL` to the Render service URL, for example:
+
+```env
+VITE_API_BASE_URL=https://your-service.onrender.com
+```
+
+If Netlify is connected to Git, set this in the Netlify environment variables and redeploy. If you manually upload `dist`, set it in `.env.production`, run `npm run build`, then upload the fresh `dist` folder.
+
+`dist` by itself does not contain the API, so login and registration will not work until the Render service is deployed and the frontend is rebuilt with its URL.

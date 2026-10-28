@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { ArrowUpRight, BadgeCheck, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { api, resolveApiAsset, type SiteContent, type SiteContentType } from "@/lib/api";
+import { formatArticleDate } from "@/lib/blog";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 type SiteContentState = { items: SiteContent[]; loading: boolean };
@@ -120,29 +121,79 @@ export function ManagedContentSection({ type }: { type: "blog" | "offer" | "badg
   return (
     <section className={"section-pad relative overflow-hidden " + (type === "offer" ? "bg-gradient-to-b from-primary-50/70 via-background to-background" : "bg-background")}>
       <div className="container-x relative">
-        <SectionHeading align="center" eyebrow={info.eyebrow} title={<>{info.title}</>} description={info.description} />
-        <div className={"mx-auto mt-11 grid max-w-6xl gap-5 " + (type === "blog" ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-2")}>
-          {sortedItems.map((item) => (
-            <ContentLink key={item.id} item={item} className="group block overflow-hidden rounded-[26px] border border-border/70 bg-card shadow-soft transition duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-lift">
-              {item.mediaUrl && (
-                <div className="relative overflow-hidden">
-                  <img src={resolveApiAsset(item.mediaUrl)} alt={item.title} loading="lazy" decoding="async" className="aspect-[1.7/1] w-full object-cover transition duration-700 group-hover:scale-[1.035]" />
-                  <span className="absolute left-4 top-4 rounded-full border border-white/30 bg-ink-950/75 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-white backdrop-blur">
-                    {item.badgeText || "Clinic journal"}
-                  </span>
+        <SectionHeading
+          align={type === "blog" ? "left" : "center"}
+          eyebrow={info.eyebrow}
+          title={<>{info.title}</>}
+          description={info.description}
+          action={
+            type === "blog" ? (
+              <Link to="/blog" className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-primary-800 transition-colors hover:text-primary-950">
+                View all articles <ArrowUpRight className="h-3.5 w-3.5" />
+              </Link>
+            ) : undefined
+          }
+        />
+        <div className={"mt-11 grid max-w-6xl gap-5 " + (type === "blog" ? "sm:grid-cols-2 lg:grid-cols-3" : "mx-auto md:grid-cols-2")}>
+          {sortedItems.map((item) =>
+            type === "blog" ? (
+              <article key={item.id} className="group flex flex-col overflow-hidden rounded-[24px] border border-border/70 bg-card shadow-soft transition duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-lift">
+                <Link to={`/blog/${item.slug}`} className="block overflow-hidden">
+                  {item.mediaUrl ? (
+                    <img
+                      src={resolveApiAsset(item.mediaUrl)}
+                      alt={item.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="aspect-[16/10] w-full object-cover transition duration-700 group-hover:scale-[1.035]"
+                    />
+                  ) : (
+                    <div className="aspect-[16/10] w-full bg-gradient-to-br from-primary-50 via-secondary-50 to-accent-50" />
+                  )}
+                </Link>
+                <div className="flex flex-1 flex-col p-5 md:p-6">
+                  <p className="text-[9.5px] font-semibold uppercase tracking-[0.16em] text-primary-700">
+                    {item.category || "Dental care"}
+                  </p>
+                  <h3 className="mt-2 font-display text-[19px] leading-snug tracking-tight text-foreground">
+                    <Link to={`/blog/${item.slug}`} className="transition-colors hover:text-primary-800">{item.title}</Link>
+                  </h3>
+                  {(item.excerpt || item.body) && (
+                    <p className="mt-2 line-clamp-3 text-[13.5px] leading-relaxed text-muted-foreground">{item.excerpt || item.body}</p>
+                  )}
+                  <div className="mt-auto flex items-center justify-between gap-3 pt-5">
+                    <span className="text-[11px] text-muted-foreground">{formatArticleDate(item.publishedAt)}</span>
+                    <Link to={`/blog/${item.slug}`} className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-primary-800">
+                      Read article <ArrowUpRight className="h-3 w-3" />
+                    </Link>
+                  </div>
                 </div>
-              )}
-              <div className="relative p-5 md:p-6">
-                <span className="inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.16em] text-primary-700">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent-500" /> Dental care · Insights
-                </span>
-                <h3 className="mt-3 font-display text-xl font-medium tracking-tight text-foreground">{item.title}</h3>
-                {item.subtitle && <p className="mt-1.5 text-sm font-medium text-primary-800">{item.subtitle}</p>}
-                {item.body && <p className="mt-3 line-clamp-4 text-sm leading-relaxed text-muted-foreground">{item.body}</p>}
-                {item.linkUrl && <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-primary-800">Learn more <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></span>}
-              </div>
-            </ContentLink>
-          ))}
+              </article>
+            ) : (
+              <ContentLink key={item.id} item={item} className="group block overflow-hidden rounded-[26px] border border-border/70 bg-card shadow-soft transition duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-lift">
+                {item.mediaUrl && (
+                  <div className="relative overflow-hidden">
+                    <img src={resolveApiAsset(item.mediaUrl)} alt={item.title} loading="lazy" decoding="async" className="aspect-[1.7/1] w-full object-cover transition duration-700 group-hover:scale-[1.035]" />
+                  </div>
+                )}
+                <div className="relative p-5 md:p-6">
+                  {item.badgeText && (
+                    <span className="inline-flex items-center gap-1.5 text-[9.5px] font-semibold uppercase tracking-[0.16em] text-primary-700">
+                      <span className="h-1.5 w-1.5 rounded-full bg-accent-500" /> {item.badgeText}
+                    </span>
+                  )}
+                  <h3 className="mt-2 font-display text-xl font-medium tracking-tight text-foreground">{item.title}</h3>
+                  {item.subtitle && <p className="mt-1.5 text-sm font-medium text-primary-800">{item.subtitle}</p>}
+                  {item.body && <p className="mt-3 line-clamp-4 text-sm leading-relaxed text-muted-foreground">{item.body}</p>}
+                  {item.linkUrl && (
+                    <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-primary-800">
+                      {item.ctaLabel || "Learn more"} <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </span>
+                  )}
+                </div>
+              </ContentLink>
+            ),
+          )}
         </div>
       </div>
     </section>

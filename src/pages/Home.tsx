@@ -4,6 +4,7 @@ import { LiveChat } from "@/components/home/LiveChat";
 import { ManagedContentSection, ManagedMediaSection } from "@/components/home/SiteContentSections";
 import { TrustBar } from "@/components/home/TrustBar";
 import { Gallery } from "@/components/home/Gallery";
+import { SmileGallery } from "@/components/home/SmileGallery";
 
 type HomeSection = ComponentType | LazyExoticComponent<ComponentType>;
 
@@ -66,6 +67,7 @@ export default function HomePage() {
       <DeferredSection component={AiWorkspace} minHeight={850} />
       <DeferredSection component={PatientReviews} minHeight={700} />
       <Gallery />
+      <SmileGallery />
       <ManagedMediaSection />
       <ManagedContentSection type="badge" />
       <DeferredSection component={InsuranceSection} minHeight={500} />

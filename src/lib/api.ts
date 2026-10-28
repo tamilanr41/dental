@@ -37,18 +37,31 @@ export type Booking = {
   whatsapp?: { patient: string | null; clinic: string | null };
 };
 
-export const SITE_CONTENT_TYPES = ["hero", "blog", "offer", "reel", "video", "image", "badge"] as const;
+export const SITE_CONTENT_TYPES = ["hero", "blog", "offer", "gallery", "reel", "video", "image", "badge"] as const;
 export type SiteContentType = (typeof SITE_CONTENT_TYPES)[number];
 
 export type SiteContent = {
   id: number;
   type: SiteContentType;
+  slug: string;
   title: string;
   subtitle: string;
+  category: string;
+  author: string;
+  excerpt: string;
   body: string;
   mediaUrl: string;
+  mobileMediaUrl: string;
+  beforeImage: string;
+  afterImage: string;
   linkUrl: string;
+  ctaLabel: string;
   badgeText: string;
+  startDate: string;
+  endDate: string;
+  publishedAt: string;
+  seoTitle: string;
+  seoDescription: string;
   published: boolean;
   displayOrder: number;
   createdAt: string;

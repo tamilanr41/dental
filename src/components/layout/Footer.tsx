@@ -64,21 +64,20 @@ export function Footer() {
       <div className="container-x relative py-16 md:py-20">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_0.9fr_0.9fr_1.2fr]">
           <div>
-            <Link to="/" className="mb-5 inline-flex w-fit items-center gap-3">
+            <Link
+              to="/"
+              className="mb-5 inline-flex w-fit items-center"
+              aria-label="Sri Saraswathi Dental Clinic home"
+            >
               <img
-                src={clinicImages.logoMark}
-                alt=""
-                aria-hidden="true"
-                width={84}
-                height={56}
+                src={clinicImages.logoLight}
+                alt="Sri Saraswathi Dental Clinic"
+                width={136}
+                height={64}
                 loading="lazy"
                 decoding="async"
-                className="h-14 w-[84px] object-contain brightness-0 invert"
+                className="h-16 w-[136px] object-contain"
               />
-              <span className="leading-tight">
-                <span className="block font-display text-[16px] font-semibold text-white">Sri Saraswathi</span>
-                <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-white/55">Dental Clinic</span>
-              </span>
             </Link>
             <p className="max-w-xs text-sm leading-relaxed">
               AI-powered dentistry with a human touch. Precision diagnostics, calmer visits, and
@@ -185,12 +184,6 @@ export function Footer() {
             <Link to="/hipaa" className="transition-colors hover:text-white">HIPAA Notice</Link>
           </div>
         </div>
-      </div>
-
-      <div className="pointer-events-none relative select-none overflow-hidden">
-        <p className="-mb-[0.22em] translate-y-[0.16em] bg-gradient-to-b from-white/[0.07] to-transparent bg-clip-text text-center font-display text-[19vw] leading-[0.75] text-transparent">
-          Saraswathi
-        </p>
       </div>
     </footer>
   );

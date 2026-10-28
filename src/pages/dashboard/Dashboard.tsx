@@ -10,14 +10,15 @@ import {
   AlertCircle,
   ArrowRight,
   ArrowUpRight,
+  BookOpenText,
   Calendar,
   CheckCircle2,
   Clock,
   Images,
+  LayoutTemplate,
   Loader2,
+  Megaphone,
   MessageCircle,
-  Receipt,
-  Sparkles,
   Users,
 } from "lucide-react";
 import { useAuth } from "@/lib/use-auth";
@@ -334,9 +335,9 @@ export default function DashboardPage() {
               {[
                 { label: "Appointments", href: "/dashboard/appointments", icon: Calendar },
                 { label: "Patients", href: "/dashboard/patients", icon: Users },
-                { label: "Create invoice", href: "/dashboard/billing", icon: Receipt },
                 { label: "Media library", href: "/dashboard/media", icon: Images },
-                { label: "AI assistant", href: "/dashboard/ai-assistant", icon: Sparkles },
+                { label: "Blog", href: "/dashboard/blog", icon: BookOpenText },
+                { label: "Offers", href: "/dashboard/offers", icon: Megaphone },
               ].map((action) => (
                 <Link
                   key={action.label}
@@ -393,16 +394,16 @@ export default function DashboardPage() {
                 <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
-                to="/dashboard/billing"
+                to="/dashboard/content"
                 className="group flex items-center gap-3 rounded-xl px-2 py-2 transition-colors hover:bg-secondary-50"
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-                  <Receipt className="h-4 w-4" />
+                  <LayoutTemplate className="h-4 w-4" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[12.5px] font-medium text-foreground">Billing module</span>
+                  <span className="block truncate text-[12.5px] font-medium text-foreground">Website content</span>
                   <span className="block truncate text-[11px] text-muted-foreground">
-                    Demo invoices — not connected to bookings yet
+                    Photos, credentials and clinic media
                   </span>
                 </span>
                 <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5" />

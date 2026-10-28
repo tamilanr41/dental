@@ -468,7 +468,7 @@ app.use((req, res, next) => {
 });
 app.use(express.json({ limit: "64kb" }));
 
-const SITE_CONTENT_TYPES = new Set(["hero", "blog", "offer", "reel", "video", "image", "badge"]);
+const SITE_CONTENT_TYPES = new Set(["hero", "blog", "offer", "gallery", "reel", "video", "image", "badge"]);
 const UPLOAD_MIME_EXTENSIONS = new Map([
   ["image/jpeg", ".jpg"],
   ["image/png", ".png"],
@@ -483,17 +483,58 @@ function serializeSiteContent(row) {
   return {
     id: row.id,
     type: row.type,
+    slug: row.slug ?? "",
     title: row.title,
     subtitle: row.subtitle,
+    category: row.category ?? "",
+    author: row.author ?? "",
+    excerpt: row.excerpt ?? "",
     body: row.body,
     mediaUrl: row.media_url,
+    mobileMediaUrl: row.mobile_media_url ?? "",
+    beforeImage: row.before_image ?? "",
+    afterImage: row.after_image ?? "",
     linkUrl: row.link_url,
+    ctaLabel: row.cta_label ?? "",
     badgeText: row.badge_text,
+    startDate: row.start_date ?? "",
+    endDate: row.end_date ?? "",
+    publishedAt: row.published_at ?? "",
+    seoTitle: row.seo_title ?? "",
+    seoDescription: row.seo_description ?? "",
     published: Boolean(row.published),
     displayOrder: row.display_order,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+function offerIsLive(row, today = todayISO()) {
+  if (!row.published) return false;
+  if (row.start_date && row.start_date > today) return false;
+  if (row.end_date && row.end_date < today) return false;
+  return true;
+}
+
+function slugify(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
+async function uniqueSlug(base, excludeId = 0) {
+  const seed = slugify(base) || "article";
+  let candidate = seed;
+  let counter = 2;
+  while (await siteContent.findOne({ type: "blog", slug: candidate, id: { $ne: excludeId } })) {
+    candidate = `${seed}-${counter}`;
+    counter += 1;
+  }
+  return candidate;
 }
 
 function normalizeContentInput(input, partial = false) {
@@ -515,10 +556,43 @@ function normalizeContentInput(input, partial = false) {
   }
   takeText("title", 140, true);
   takeText("subtitle", 240);
-  takeText("body", 6000);
+  takeText("body", 60000);
   takeText("mediaUrl", 1000);
+  takeText("mobileMediaUrl", 1000);
+  takeText("beforeImage", 1000);
+  takeText("afterImage", 1000);
   takeText("linkUrl", 1000);
+  takeText("ctaLabel", 40);
   takeText("badgeText", 80);
+  takeText("category", 60);
+  takeText("author", 80);
+  takeText("excerpt", 400);
+  takeText("seoTitle", 80);
+  takeText("seoDescription", 200);
+
+  if (!partial || has("slug")) {
+    const providedSlug = String(body.slug ?? "").trim().toLowerCase();
+    const rawSlug = slugify(providedSlug || body.title || "");
+    if (providedSlug && providedSlug !== rawSlug) {
+      throw new HttpError(400, "Slugs can only use lowercase letters, numbers and dashes.");
+    }
+    fields.slug = rawSlug;
+  }
+
+  for (const key of ["startDate", "endDate", "publishedAt"]) {
+    if (partial && !has(key)) continue;
+    const raw = String(body[key] ?? "").trim();
+    if (!raw) {
+      fields[key] = "";
+      continue;
+    }
+    const iso = validDate(raw);
+    if (!iso) throw new HttpError(400, "Dates must use the YYYY-MM-DD format.");
+    fields[key] = iso;
+  }
+  if (fields.startDate && fields.endDate && fields.endDate < fields.startDate) {
+    throw new HttpError(400, "The end date must be after the start date.");
+  }
 
   if (!partial || has("published")) fields.published = body.published ? 1 : 0;
   if (!partial || has("displayOrder")) {
@@ -529,7 +603,7 @@ function normalizeContentInput(input, partial = false) {
     fields.displayOrder = order;
   }
 
-  for (const key of ["mediaUrl", "linkUrl"]) {
+  for (const key of ["mediaUrl", "mobileMediaUrl", "beforeImage", "afterImage", "linkUrl"]) {
     const value = fields[key];
     if (typeof value !== "string" || !value) continue;
     const isRelative = value.startsWith("/") && !value.startsWith("//");
@@ -544,10 +618,14 @@ function normalizeContentInput(input, partial = false) {
   return fields;
 }
 
+const MEDIA_FIELDS = ["media_url", "mobile_media_url", "before_image", "after_image"];
+
 async function deleteUploadedMediaIfUnreferenced(mediaUrl) {
   const match = /^\/api\/media\/([a-f0-9-]{36}\.(?:jpg|png|webp|avif|gif|mp4|webm|mov))$/i.exec(String(mediaUrl || ""));
   if (!match) return;
-  const used = await siteContent.countDocuments({ media_url: mediaUrl });
+  const used = await siteContent.countDocuments({
+    $or: MEDIA_FIELDS.map((field) => ({ [field]: mediaUrl })),
+  });
   if (!used) fs.rmSync(path.join(UPLOADS_DIR, match[1]), { force: true });
 }
 
@@ -557,6 +635,51 @@ app.get("/api/content", async (req, res, next) => {
     if (type && !SITE_CONTENT_TYPES.has(type)) throw new HttpError(400, "Choose a valid content type.");
     const query = { published: 1, ...(type ? { type } : {}) };
     const rows = await siteContent.find(query).sort({ type: 1, display_order: 1, id: -1 }).toArray();
+    const today = todayISO();
+    const visible = rows.filter((row) => (row.type === "offer" ? offerIsLive(row, today) : true));
+    res.json({ items: visible.map(serializeSiteContent) });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/api/blog", async (_req, res, next) => {
+  try {
+    const rows = await siteContent
+      .find({ type: "blog", published: 1 })
+      .sort({ published_at: -1, id: -1 })
+      .toArray();
+    res.json({ items: rows.map(serializeSiteContent) });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/api/blog/:slug", async (req, res, next) => {
+  try {
+    const slug = slugify(req.params.slug);
+    if (!slug) throw new HttpError(404, "Article not found.");
+    const row = await siteContent.findOne({ type: "blog", slug, published: 1 });
+    if (!row) throw new HttpError(404, "Article not found.");
+    const others = await siteContent
+      .find({ type: "blog", published: 1, id: { $ne: row.id } })
+      .sort({ published_at: -1, id: -1 })
+      .toArray();
+    const related = [...others.filter((item) => item.category && item.category === row.category), ...others]
+      .filter((item, index, list) => list.findIndex((entry) => entry.id === item.id) === index)
+      .slice(0, 3);
+    res.json({ item: serializeSiteContent(row), related: related.map(serializeSiteContent) });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/api/gallery", async (_req, res, next) => {
+  try {
+    const rows = await siteContent
+      .find({ type: "gallery", published: 1 })
+      .sort({ display_order: 1, id: -1 })
+      .toArray();
     res.json({ items: rows.map(serializeSiteContent) });
   } catch (error) {
     next(error);
@@ -581,12 +704,25 @@ app.post("/api/admin/content", requireAdmin, async (req, res, next) => {
     const row = {
       id: await nextId("clinic_site_content"),
       type: fields.type,
+      slug: fields.type === "blog" ? await uniqueSlug(fields.slug || fields.title) : fields.slug,
       title: fields.title,
       subtitle: fields.subtitle,
+      category: fields.category,
+      author: fields.author,
+      excerpt: fields.excerpt,
       body: fields.body,
       media_url: fields.mediaUrl,
+      mobile_media_url: fields.mobileMediaUrl,
+      before_image: fields.beforeImage,
+      after_image: fields.afterImage,
       link_url: fields.linkUrl,
+      cta_label: fields.ctaLabel,
       badge_text: fields.badgeText,
+      start_date: fields.startDate,
+      end_date: fields.endDate,
+      published_at: fields.publishedAt || (fields.published ? todayISO() : ""),
+      seo_title: fields.seoTitle,
+      seo_description: fields.seoDescription,
       published: fields.published,
       display_order: fields.displayOrder,
       created_at: stamp,
@@ -608,13 +744,35 @@ app.patch("/api/admin/content/:id", requireAdmin, async (req, res, next) => {
     const fields = normalizeContentInput(req.body, true);
     if (!Object.keys(fields).length) throw new HttpError(400, "Make a change before saving.");
     const update = {};
+    const map = {
+      mediaUrl: "media_url",
+      mobileMediaUrl: "mobile_media_url",
+      beforeImage: "before_image",
+      afterImage: "after_image",
+      linkUrl: "link_url",
+      ctaLabel: "cta_label",
+      badgeText: "badge_text",
+      startDate: "start_date",
+      endDate: "end_date",
+      publishedAt: "published_at",
+      seoTitle: "seo_title",
+      seoDescription: "seo_description",
+      displayOrder: "display_order",
+    };
     for (const [key, value] of Object.entries(fields)) {
-      const map = { mediaUrl: "media_url", linkUrl: "link_url", badgeText: "badge_text", displayOrder: "display_order" };
       update[map[key] || key] = value;
+    }
+    if (previous.type === "blog" && typeof fields.slug === "string") {
+      update.slug = await uniqueSlug(fields.slug || previous.title, id);
+    }
+    if (fields.published === 1 && !previous.published_at && !fields.publishedAt) {
+      update.published_at = todayISO();
     }
     await siteContent.updateOne({ id }, { $set: { ...update, updated_at: nowISO() } });
     const row = await siteContent.findOne({ id });
-    if (previous.media_url !== row.media_url) await deleteUploadedMediaIfUnreferenced(previous.media_url);
+    for (const field of MEDIA_FIELDS) {
+      if (previous[field] !== row[field]) await deleteUploadedMediaIfUnreferenced(previous[field]);
+    }
     res.json({ item: serializeSiteContent(row) });
   } catch (error) {
     next(error);
@@ -628,7 +786,9 @@ app.delete("/api/admin/content/:id", requireAdmin, async (req, res, next) => {
     const row = await siteContent.findOne({ id });
     if (!row) throw new HttpError(404, "Content item not found.");
     await siteContent.deleteOne({ id });
-    await deleteUploadedMediaIfUnreferenced(row.media_url);
+    for (const field of MEDIA_FIELDS) {
+      await deleteUploadedMediaIfUnreferenced(row[field]);
+    }
     res.json({ ok: true });
   } catch (error) {
     next(error);

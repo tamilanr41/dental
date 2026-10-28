@@ -103,6 +103,18 @@ export function Hero() {
   }, [heroSlideCount]);
   const heroBanner = usesAdminHeroBanners && heroBannerIndex > 0 ? sortedHeroBanners[heroBannerIndex - 1] : null;
   const defaultHeroSlide = defaultHeroSlides[usesAdminHeroBanners ? 0 : heroBannerIndex] ?? defaultHeroSlides[0];
+  const heroCtaLabel = heroBanner?.ctaLabel || "Book in 60 seconds";
+  const heroCtaHref = heroBanner?.linkUrl || "/booking";
+  const heroCtaIsExternal = /^https:\/\//i.test(heroCtaHref);
+  const [isNarrow, setIsNarrow] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 640px)");
+    const update = () => setIsNarrow(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const bgX = useTransform(mouseX, [-1, 1], [-14, 14]);
@@ -172,19 +184,35 @@ export function Hero() {
           </motion.h1>
 
           <motion.p variants={itemVariants} className="mt-7 max-w-md text-pretty text-[17px] leading-relaxed text-muted-foreground">
-            {heroBanner?.body || "Book in 60 seconds, get an AI-assisted triage before you arrive, and walk out with care that feels as precise as it looks."}
+            {heroBanner
+              ? heroBanner.body || "Personalised dental care from Dr. Dinesh Kumar and the Sri Saraswathi team in Erode."
+              : "Book in 60 seconds, get an AI-assisted triage before you arrive, and walk out with care that feels as precise as it looks."}
           </motion.p>
 
           <motion.div variants={itemVariants} className="mt-9 flex flex-wrap items-center gap-3">
-            <Link
-              to="/booking"
-              data-cursor="Book now"
-              className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_18px_36px_-18px_rgba(18,56,72,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-800"
-            >
-              <CalendarCheck className="h-4 w-4" />
-              Book in 60 seconds
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
+            {heroCtaIsExternal ? (
+              <a
+                href={heroCtaHref}
+                target="_blank"
+                rel="noreferrer"
+                data-cursor={heroCtaLabel}
+                className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_18px_36px_-18px_rgba(18,56,72,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-800"
+              >
+                <CalendarCheck className="h-4 w-4" />
+                {heroCtaLabel}
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
+            ) : (
+              <Link
+                to={heroCtaHref}
+                data-cursor={heroCtaLabel}
+                className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_18px_36px_-18px_rgba(18,56,72,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-800"
+              >
+                <CalendarCheck className="h-4 w-4" />
+                {heroCtaLabel}
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            )}
             <Link
               to="/ai-features"
               data-cursor="See AI"
@@ -255,7 +283,11 @@ export function Hero() {
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.img
                     key={heroBanner?.id ?? "clinic-default-" + heroBannerIndex}
-                    src={heroBanner?.mediaUrl ? resolveApiAsset(heroBanner.mediaUrl) : defaultHeroSlide.image}
+                    src={
+                      heroBanner && (heroBanner.mobileMediaUrl || heroBanner.mediaUrl)
+                        ? resolveApiAsset((isNarrow && heroBanner.mobileMediaUrl) || heroBanner.mediaUrl)
+                        : defaultHeroSlide.image
+                    }
                     alt={heroBanner?.title || defaultHeroSlide.alt}
                     width={900}
                     height={675}

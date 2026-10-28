@@ -7,27 +7,23 @@ import { clinicImages } from "@/lib/images";
 import { useAuth } from "@/lib/use-auth";
 import { api, type AdminSummary } from "@/lib/api";
 import {
-  BarChart3,
   Bell,
-  Bot,
+  BookOpenText,
   Calendar,
   Check,
   ChevronLeft,
   ChevronRight,
   ClipboardList,
-  DollarSign,
   ExternalLink,
-  FileText,
   Home,
+  Image,
   Images,
   LayoutTemplate,
   LogOut,
   Megaphone,
   Menu,
-  Package,
   Search,
   Settings,
-  UserCog,
   Users,
   X,
 } from "lucide-react";
@@ -37,16 +33,13 @@ const sidebarLinks = [
   { label: "Appointments", href: "/dashboard/appointments", icon: Calendar },
   { label: "Patients", href: "/dashboard/patients", icon: Users },
   { label: "Treatments", href: "/dashboard/treatments", icon: ClipboardList },
-  { label: "Billing", href: "/dashboard/billing", icon: DollarSign },
-  { label: "Inventory", href: "/dashboard/inventory", icon: Package },
-  { label: "Staff", href: "/dashboard/staff", icon: UserCog },
-  { label: "AI Assistant", href: "/dashboard/ai-assistant", icon: Bot },
-  { label: "Documents", href: "/dashboard/documents", icon: FileText },
-  { label: "Website content", href: "/dashboard/content", icon: LayoutTemplate },
-  { label: "Media library", href: "/dashboard/media", icon: Images },
-  { label: "Marketing", href: "/dashboard/marketing", icon: Megaphone },
-  { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { label: "Settings", href: "/dashboard/settings", icon: Settings },
+  { label: "Website Content", href: "/dashboard/content", icon: LayoutTemplate },
+  { label: "Hero Banners", href: "/dashboard/hero-banners", icon: Images },
+  { label: "Offers & Announcement Banner", href: "/dashboard/offers", icon: Megaphone },
+  { label: "Smile Gallery", href: "/dashboard/smile-gallery", icon: Images },
+  { label: "Blog Management", href: "/dashboard/blog", icon: BookOpenText },
+  { label: "Media Library", href: "/dashboard/media", icon: Image },
+  { label: "Clinic Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 type Notification = { id: number | string; title: string; detail: string; time: string; unread: boolean };
@@ -246,9 +239,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                       )}
                     />
                     {!collapsed && <span>{link.label}</span>}
-                    {!collapsed && isActive && (
-                      <span className="ml-auto h-1.5 w-1.5 rounded-full bg-accent" />
-                    )}
                   </Link>
                 </li>
               );

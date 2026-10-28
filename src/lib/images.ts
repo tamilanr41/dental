@@ -8,7 +8,8 @@ export const heroImages = {
 };
 
 export const clinicImages = {
-  logo: "/images/clinic/sri-saraswathi-logo.webp",
+  logo: "/images/clinic/sri-saraswathi-logo-transparent.webp",
+  logoLight: "/images/clinic/sri-saraswathi-logo-light.webp",
   logoMark: "/images/clinic/sri-saraswathi-mark.webp",
   heroDentalCare: "/images/clinic/hero-dental-care.webp",
   dentistPortrait: "/images/clinic/dentist-portrait.webp",

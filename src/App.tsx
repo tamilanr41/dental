@@ -17,6 +17,8 @@ const AiFeatures = lazy(() => import("@/pages/AiFeatures"));
 const Login = lazy(() => import("@/pages/Login"));
 const Register = lazy(() => import("@/pages/Register"));
 const Booking = lazy(() => import("@/pages/Booking"));
+const Blog = lazy(() => import("@/pages/Blog"));
+const BlogArticle = lazy(() => import("@/pages/BlogArticle"));
 const Contact = lazy(() => import("@/pages/Contact"));
 const Dentists = lazy(() => import("@/pages/Dentists"));
 const Emergency = lazy(() => import("@/pages/Emergency"));
@@ -29,11 +31,15 @@ const DashboardAiAssistant = lazy(() => import("@/pages/dashboard/AiAssistant"))
 const DashboardAnalytics = lazy(() => import("@/pages/dashboard/Analytics"));
 const DashboardAppointments = lazy(() => import("@/pages/dashboard/Appointments"));
 const DashboardBilling = lazy(() => import("@/pages/dashboard/Billing"));
+const DashboardBlogManagement = lazy(() => import("@/pages/dashboard/BlogManagement"));
 const DashboardDocuments = lazy(() => import("@/pages/dashboard/Documents"));
+const DashboardHeroBanners = lazy(() => import("@/pages/dashboard/HeroBanners"));
 const DashboardInventory = lazy(() => import("@/pages/dashboard/Inventory"));
 const DashboardMarketing = lazy(() => import("@/pages/dashboard/Marketing"));
+const DashboardOffers = lazy(() => import("@/pages/dashboard/Offers"));
 const DashboardPatients = lazy(() => import("@/pages/dashboard/Patients"));
 const DashboardSettings = lazy(() => import("@/pages/dashboard/Settings"));
+const DashboardSmileGallery = lazy(() => import("@/pages/dashboard/SmileGallery"));
 const DashboardStaff = lazy(() => import("@/pages/dashboard/Staff"));
 const DashboardTreatments = lazy(() => import("@/pages/dashboard/Treatments"));
 const DashboardMedia = lazy(() => import("@/pages/dashboard/MediaLibrary"));
@@ -67,6 +73,8 @@ function AppRoutes() {
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/register" element={<Register />} />
         <Route path="/booking" element={<Booking />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogArticle />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/dentists" element={<Dentists />} />
         <Route path="/emergency" element={<Emergency />} />
@@ -81,13 +89,17 @@ function AppRoutes() {
           <Route path="/dashboard/analytics" element={<DashboardAnalytics />} />
           <Route path="/dashboard/appointments" element={<DashboardAppointments />} />
           <Route path="/dashboard/billing" element={<DashboardBilling />} />
+          <Route path="/dashboard/blog" element={<DashboardBlogManagement />} />
           <Route path="/dashboard/content" element={<DashboardSiteContent />} />
           <Route path="/dashboard/documents" element={<DashboardDocuments />} />
+          <Route path="/dashboard/hero-banners" element={<DashboardHeroBanners />} />
           <Route path="/dashboard/inventory" element={<DashboardInventory />} />
           <Route path="/dashboard/marketing" element={<DashboardMarketing />} />
           <Route path="/dashboard/media" element={<DashboardMedia />} />
+          <Route path="/dashboard/offers" element={<DashboardOffers />} />
           <Route path="/dashboard/patients" element={<DashboardPatients />} />
           <Route path="/dashboard/settings" element={<DashboardSettings />} />
+          <Route path="/dashboard/smile-gallery" element={<DashboardSmileGallery />} />
           <Route path="/dashboard/staff" element={<DashboardStaff />} />
           <Route path="/dashboard/treatments" element={<DashboardTreatments />} />
         </Route>

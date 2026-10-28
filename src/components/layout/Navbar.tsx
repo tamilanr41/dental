@@ -122,25 +122,23 @@ export function Navbar() {
     >
       <nav
         className={cn(
-          "container-x flex items-center justify-between gap-6 transition-all duration-300",
+          "container-x flex items-center justify-between gap-4 transition-all duration-300",
           scrolled || mobileOpen ? "h-[68px]" : "h-[84px]"
         )}
       >
-        <Link to="/" className="group flex min-w-0 shrink-0 items-center" aria-label="Sri Saraswathi Dental Clinic home">
+        <Link to="/" className="group flex shrink-0 items-center" aria-label="Sri Saraswathi Dental Clinic home">
           <img
-            src={clinicImages.logoMark}
-            alt=""
-            aria-hidden="true"
-            width={56}
-            height={40}
+            src={clinicImages.logo}
+            alt="Sri Saraswathi Dental Clinic"
+            width={136}
+            height={70}
             fetchPriority="high"
             decoding="async"
-            className="h-10 w-14 shrink-0 object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+            className="h-16 w-[136px] shrink-0 object-contain transition-transform duration-300 group-hover:scale-[1.02]"
           />
-
         </Link>
 
-        <div className="hidden items-center gap-1 lg:flex">
+        <div className="ml-auto hidden items-center gap-1 lg:flex">
           {navLinks.map((link) =>
             link.children ? (
               <div
@@ -225,7 +223,7 @@ export function Navbar() {
         <div className="hidden items-center gap-2 lg:flex">
           <a
             href="tel:+914244272494"
-            className="mr-1 flex items-center gap-1.5 text-[13px] font-medium text-foreground/60 transition-colors hover:text-foreground"
+            className="mr-1 hidden items-center gap-1.5 text-[13px] font-medium text-foreground/60 transition-colors hover:text-foreground xl:flex"
           >
             <Phone className="h-3.5 w-3.5" />
             0424 427 2494

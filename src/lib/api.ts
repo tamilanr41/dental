@@ -1,0 +1,127 @@
+export type Role = "patient" | "admin";
+
+export type User = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  role: Role;
+};
+
+export type BookingStatus =
+  | "pending"
+  | "confirmed"
+  | "checked_in"
+  | "completed"
+  | "cancelled"
+  | "no_show";
+
+export type Booking = {
+  id: number;
+  ref: string;
+  patientName: string;
+  patientPhone: string;
+  patientEmail: string;
+  service: string;
+  serviceLabel: string;
+  date: string;
+  dateLabel: string;
+  time: string;
+  dentist: string;
+  notes: string;
+  status: BookingStatus;
+  statusLabel: string;
+  createdAt: string;
+  updatedAt: string;
+  whatsapp?: { patient: string | null; clinic: string | null };
+};
+
+export type Slot = { time: string; remaining: number };
+export type Availability = { date: string; closed: boolean; slots: Slot[] };
+
+export type AdminSummary = {
+  today: string;
+  counts: {
+    today: number;
+    pending: number;
+    confirmed: number;
+    checkedIn: number;
+    completed: number;
+    cancelled: number;
+    patients: number;
+    totalBookings: number;
+  };
+  week: { date: string; label: string; count: number }[];
+  todaySchedule: Booking[];
+  queue: Booking[];
+  recent: Booking[];
+  recentPatients: { id: number; name: string; email: string; phone: string; joinedAt: string }[];
+};
+
+export class ApiError extends Error {
+  status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
+
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").trim().replace(/\/+$/, "");
+
+async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...init,
+      credentials: "include",
+      headers: {
+        ...(init.body ? { "Content-Type": "application/json" } : {}),
+        ...init.headers,
+      },
+    });
+  } catch {
+    throw new ApiError(0, "Clinic account service is unreachable. Please try again shortly.");
+  }
+
+  const text = await response.text();
+  let data: unknown = null;
+  if (text) {
+    try {
+      data = JSON.parse(text) as unknown;
+    } catch {
+      throw new ApiError(response.status, "Clinic account service is not configured for this site yet.");
+    }
+  }
+
+  if (!response.ok) {
+    const message =
+      data && typeof data === "object" && "error" in data
+        ? String((data as { error: unknown }).error)
+        : "Something went wrong. Please try again.";
+    throw new ApiError(response.status, message);
+  }
+
+  return data as T;
+}
+
+export const api = {
+  get: <T>(path: string, init?: RequestInit) => request<T>(path, init),
+  post: <T>(path: string, body?: unknown) =>
+    request<T>(path, { method: "POST", body: body ? JSON.stringify(body) : undefined }),
+  patch: <T>(path: string, body: unknown) =>
+    request<T>(path, { method: "PATCH", body: JSON.stringify(body) }),
+};
+
+export const statusTone: Record<
+  BookingStatus,
+  "default" | "success" | "info" | "warning" | "danger" | "purple"
+> = {
+  pending: "warning",
+  confirmed: "success",
+  checked_in: "info",
+  completed: "default",
+  cancelled: "danger",
+  no_show: "danger",
+};

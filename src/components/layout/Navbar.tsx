@@ -112,9 +112,27 @@ export function Navbar() {
 
   return (
     <>
+    <div className="fixed inset-x-0 top-0 z-[60]">
+      <div className="relative overflow-hidden bg-gradient-to-r from-ink-950 via-primary-900 to-ink-950 text-white">
+        <div className="absolute inset-0 opacity-40">
+          <div className="absolute -left-10 top-1/2 h-10 w-40 -translate-y-1/2 rotate-12 bg-accent/30 blur-2xl" />
+          <div className="absolute right-0 top-1/2 h-10 w-48 -translate-y-1/2 -rotate-12 bg-white/10 blur-2xl" />
+        </div>
+        <div className="container-x relative flex items-center justify-center gap-2 overflow-hidden py-1.5 text-center text-[11px]">
+          <Sparkles className="h-3.5 w-3.5 text-accent-300" />
+          <span className="font-medium">New patient offer — Free consultation on first visit</span>
+          <span className="hidden sm:inline">·</span>
+          <Link to="/booking" className="hidden items-center gap-1 font-semibold text-accent-200 transition hover:text-white sm:inline-flex">
+            Book now <ArrowRight className="h-3 w-3" />
+          </Link>
+          <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+        </div>
+      </div>
+    </div>
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        "fixed inset-x-0 z-50 transition-all duration-300",
+        "top-[30px]",
         scrolled || mobileOpen || pathname === "/ai-features"
           ? "border-b border-border/70 bg-background/85 shadow-[0_18px_40px_-30px_rgba(13,28,34,0.45)] backdrop-blur-xl"
           : "border-b border-transparent bg-transparent"

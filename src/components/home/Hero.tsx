@@ -63,16 +63,21 @@ const heroStats = [
 export function Hero() {
   const { isLowEnd } = useDeviceDetect();
   const { items: heroBanners } = useSiteContent("hero");
+  const sortedHeroBanners = [...heroBanners].sort((a, b) => {
+    if (a.displayOrder !== b.displayOrder) return a.displayOrder - b.displayOrder;
+    return a.id - b.id;
+  });
   const [heroBannerIndex, setHeroBannerIndex] = useState(0);
   useEffect(() => {
     setHeroBannerIndex(0);
-    if (heroBanners.length < 2) return;
+    if (sortedHeroBanners.length < 2) return;
     const timer = window.setInterval(() => {
-      setHeroBannerIndex((index) => (index + 1) % heroBanners.length);
+      setHeroBannerIndex((index) => (index + 1) % sortedHeroBanners.length);
     }, 6500);
     return () => window.clearInterval(timer);
-  }, [heroBanners.length]);
-  const heroBanner = heroBanners.length ? heroBanners[heroBannerIndex % heroBanners.length] : null;
+  }, [sortedHeroBanners.length]);
+  const heroBanner = sortedHeroBanners.length ? sortedHeroBanners[heroBannerIndex % sortedHeroBanners.length] : null;
+  // heroBanner defined above with sorted order
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const bgX = useTransform(mouseX, [-1, 1], [-14, 14]);
@@ -115,12 +120,12 @@ export function Hero() {
       <div className="container-x grid items-center gap-14 pb-16 lg:grid-cols-[1.04fr_0.96fr] lg:gap-16 lg:pb-24">
         <motion.div variants={containerVariants} initial={false} animate="visible" className="relative z-10">
           <motion.div variants={itemVariants}>
-            <span className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/70 py-1.5 pl-1.5 pr-4 text-[12px] font-medium text-foreground/70 shadow-soft backdrop-blur">
-              <span className="flex items-center gap-1 rounded-full bg-ink-950 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white">
-                <Sparkles className="h-3 w-3 text-accent-300" />
-                {heroBanner?.badgeText || "New"}
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary-200/70 bg-gradient-to-r from-primary-50/90 to-white py-1.5 pl-1.5 pr-4 text-[12px] font-medium text-foreground/80 shadow-[0_10px_40px_-20px_rgba(18,56,72,0.9)] backdrop-blur">
+              <span className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-ink-950 via-primary-800 to-ink-950 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.18em] text-white shadow-[0_10px_30px_-18px_rgba(255,255,255,0.9)]">
+                <Sparkles className="h-3 w-3 animate-pulse text-accent-300" />
+                {heroBanner?.badgeText || "Featured"}
               </span>
-              {heroBanner ? (heroBanner.subtitle || "Featured for your smile") : "AI dental operating system"}
+              <span className="line-clamp-1">{heroBanner ? (heroBanner.subtitle || heroBanner.title || "Precision dental care reimagined") : "AI dental operating system"}</span>
             </span>
           </motion.div>
 
@@ -167,25 +172,24 @@ export function Hero() {
             </Link>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4 text-[13px] text-muted-foreground">
-            <span className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-primary-600" />
-              HIPAA-compliant
+          <motion.div variants={itemVariants} className="mt-9 flex flex-wrap items-center gap-2.5 text-[12px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-card/70 px-3 py-1 shadow-soft backdrop-blur">
+              <Shield className="h-3.5 w-3.5 text-primary-600" />
+              Sterile &amp; safe care
             </span>
-            <span className="hidden h-4 w-px bg-border sm:block" />
-            <span className="flex items-center gap-2">
-              <span className="flex -space-x-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-card/70 px-3 py-1 shadow-soft backdrop-blur">
+              <Check className="h-3.5 w-3.5 text-emerald-600" />
+              Pain-minimized dentistry
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-card/70 px-3 py-1 shadow-soft backdrop-blur">
+              <span className="flex -space-x-1.5">
                 {["#dbe7ec", "#e8dcc9", "#f0d9cf", "#d4e4df"].map((c, i) => (
-                  <span
-                    key={i}
-                    className="h-6 w-6 rounded-full border-2 border-background"
-                    style={{ backgroundColor: c }}
-                  />
+                  <span key={i} className="h-5 w-5 rounded-full border border-background" style={{ backgroundColor: c }} />
                 ))}
               </span>
               <span className="flex items-center gap-1">
-                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                <strong className="font-semibold text-foreground">4.9</strong> · 2,000+ patients
+                <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                <strong className="font-semibold text-foreground">4.9</strong> · 2,000+ smiles
               </span>
             </span>
           </motion.div>

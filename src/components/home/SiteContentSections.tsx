@@ -68,11 +68,19 @@ const sectionInfo: Record<"blog" | "offer" | "badge", { eyebrow: string; title: 
 export function ManagedContentSection({ type }: { type: "blog" | "offer" | "badge" }) {
   const { items, loading } = useSiteContent(type);
   if (loading || !items.length) return null;
+  const sortedItems = [...items].sort((a, b) => {
+    if (a.displayOrder !== b.displayOrder) return a.displayOrder - b.displayOrder;
+    return b.id - a.id;
+  });
   const info = sectionInfo[type];
 
   if (type === "badge") {
     return (
       <section className="section-pad relative overflow-hidden bg-ink-950 text-white">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-primary-500/20 blur-[120px]" />
+          <div className="absolute -right-16 bottom-0 h-72 w-72 rounded-full bg-accent-400/15 blur-[140px]" />
+        </div>
         <div className="container-x relative">
           <div className="max-w-2xl">
             <p className="eyebrow text-white/60"><span className="eyebrow-dot" />{info.eyebrow}</p>
@@ -80,8 +88,8 @@ export function ManagedContentSection({ type }: { type: "blog" | "offer" | "badg
             <p className="mt-4 text-pretty text-[16px] leading-relaxed text-white/60">{info.description}</p>
           </div>
           <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {items.map((item) => (
-              <article key={item.id} className="flex min-h-28 items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.055] p-4">
+            {sortedItems.map((item) => (
+              <article key={item.id} className="flex min-h-28 items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.055] p-4 transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.09]">
                 {item.mediaUrl ? (
                   <img src={resolveApiAsset(item.mediaUrl)} alt="" loading="lazy" decoding="async" className="h-12 w-12 shrink-0 rounded-xl bg-white object-contain p-1.5" />
                 ) : (
@@ -101,11 +109,11 @@ export function ManagedContentSection({ type }: { type: "blog" | "offer" | "badg
   }
 
   return (
-    <section className={"section-pad relative overflow-hidden " + (type === "offer" ? "bg-primary-50/55" : "bg-background")}>
+    <section className={"section-pad relative overflow-hidden " + (type === "offer" ? "bg-gradient-to-b from-primary-50/70 via-background to-background" : "bg-background")}>
       <div className="container-x relative">
         <SectionHeading align="center" eyebrow={info.eyebrow} title={<>{info.title}</>} description={info.description} />
         <div className={"mx-auto mt-11 grid max-w-6xl gap-5 " + (type === "blog" ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-2")}>
-          {items.map((item) => (
+          {sortedItems.map((item) => (
             <ContentLink key={item.id} item={item} className="group block overflow-hidden rounded-[24px] border border-border/70 bg-card shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-lift">
               {item.mediaUrl && <img src={resolveApiAsset(item.mediaUrl)} alt={item.title} loading="lazy" decoding="async" className={"w-full object-cover " + (type === "offer" ? "aspect-[2/1]" : "aspect-[1.7/1]")} />}
               <div className="p-5 md:p-6">

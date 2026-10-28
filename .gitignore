@@ -26,6 +26,7 @@ dist-ssr
 # Deployment secrets and persistent clinic database
 .env*
 !.env.production.example
+!.env.api.example
 server/data/
 
 # Generated Netlify deploy archives

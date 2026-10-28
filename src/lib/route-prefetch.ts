@@ -16,6 +16,7 @@ const routeLoaders: Record<string, () => Promise<unknown>> = {
   "/dashboard/analytics": () => import("@/pages/dashboard/Analytics"),
   "/dashboard/appointments": () => import("@/pages/dashboard/Appointments"),
   "/dashboard/billing": () => import("@/pages/dashboard/Billing"),
+  "/dashboard/content": () => import("@/pages/dashboard/SiteContent"),
   "/dashboard/documents": () => import("@/pages/dashboard/Documents"),
   "/dashboard/inventory": () => import("@/pages/dashboard/Inventory"),
   "/dashboard/marketing": () => import("@/pages/dashboard/Marketing"),

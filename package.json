@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "dev:api": "node server/index.mjs",
+    "dev:api": "node --env-file-if-exists=.env.api server/index.mjs",
     "dev:web": "vite",
     "build": "tsc -b && vite build",
     "start": "node server/index.mjs",
@@ -40,6 +40,7 @@
     "framer-motion": "^12.42.2",
     "gsap": "^3.15.0",
     "lucide-react": "^1.23.0",
+    "mongodb": "^7.7.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-hook-form": "^7.80.0",

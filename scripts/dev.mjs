@@ -1,5 +1,11 @@
 import { spawn } from "node:child_process";
 
+try {
+  process.loadEnvFile(".env.api");
+} catch (error) {
+  if (error.code !== "ENOENT") throw error;
+}
+
 const children = [
   spawn(process.execPath, ["server/index.mjs"], { stdio: "inherit" }),
   spawn(process.execPath, ["node_modules/vite/bin/vite.js"], { stdio: "inherit" }),

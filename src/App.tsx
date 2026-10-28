@@ -36,6 +36,7 @@ const DashboardSettings = lazy(() => import("@/pages/dashboard/Settings"));
 const DashboardStaff = lazy(() => import("@/pages/dashboard/Staff"));
 const DashboardTreatments = lazy(() => import("@/pages/dashboard/Treatments"));
 const DashboardMedia = lazy(() => import("@/pages/dashboard/MediaLibrary"));
+const DashboardSiteContent = lazy(() => import("@/pages/dashboard/SiteContent"));
 const PatientPortal = lazy(() => import("@/pages/patient-portal/PatientPortal"));
 const PatientPortalAppointments = lazy(() => import("@/pages/patient-portal/Appointments"));
 const PatientPortalBilling = lazy(() => import("@/pages/patient-portal/Billing"));
@@ -79,6 +80,7 @@ function AppRoutes() {
           <Route path="/dashboard/analytics" element={<DashboardAnalytics />} />
           <Route path="/dashboard/appointments" element={<DashboardAppointments />} />
           <Route path="/dashboard/billing" element={<DashboardBilling />} />
+          <Route path="/dashboard/content" element={<DashboardSiteContent />} />
           <Route path="/dashboard/documents" element={<DashboardDocuments />} />
           <Route path="/dashboard/inventory" element={<DashboardInventory />} />
           <Route path="/dashboard/marketing" element={<DashboardMarketing />} />

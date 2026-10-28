@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { ArrowRight, Play, Sparkles, Shield, Star, Bot, CalendarCheck, Check } from "lucide-react";
 import { useDeviceDetect } from "@/hooks/useDeviceDetect";
 import { NumberTicker } from "@/components/animations/NumberTicker";
 import { clinicImages } from "@/lib/images";
+import { useSiteContent } from "@/components/home/SiteContentSections";
+import { resolveApiAsset } from "@/lib/api";
 
 function FloatingElement({
   children,
@@ -60,6 +62,17 @@ const heroStats = [
 
 export function Hero() {
   const { isLowEnd } = useDeviceDetect();
+  const { items: heroBanners } = useSiteContent("hero");
+  const [heroBannerIndex, setHeroBannerIndex] = useState(0);
+  useEffect(() => {
+    setHeroBannerIndex(0);
+    if (heroBanners.length < 2) return;
+    const timer = window.setInterval(() => {
+      setHeroBannerIndex((index) => (index + 1) % heroBanners.length);
+    }, 6500);
+    return () => window.clearInterval(timer);
+  }, [heroBanners.length]);
+  const heroBanner = heroBanners.length ? heroBanners[heroBannerIndex % heroBanners.length] : null;
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const bgX = useTransform(mouseX, [-1, 1], [-14, 14]);
@@ -105,23 +118,31 @@ export function Hero() {
             <span className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/70 py-1.5 pl-1.5 pr-4 text-[12px] font-medium text-foreground/70 shadow-soft backdrop-blur">
               <span className="flex items-center gap-1 rounded-full bg-ink-950 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white">
                 <Sparkles className="h-3 w-3 text-accent-300" />
-                New
+                {heroBanner?.badgeText || "New"}
               </span>
-              AI dental operating system
+              {heroBanner ? (heroBanner.subtitle || "Featured for your smile") : "AI dental operating system"}
             </span>
           </motion.div>
 
           <motion.h1 variants={itemVariants} className="mt-7 text-display-1 text-balance text-foreground">
-            Your smile,
-            <br />
-            <span className="italic text-primary-700">reimagined</span> by
-            <br />
-            AI &amp; expert care.
+            {heroBanner ? (
+              <>
+                <span className="whitespace-pre-line">{heroBanner.title}</span>
+                {heroBanner.subtitle && <><br /><span className="italic text-primary-700">{heroBanner.subtitle}</span></>}
+              </>
+            ) : (
+              <>
+                Your smile,
+                <br />
+                <span className="italic text-primary-700">reimagined</span> by
+                <br />
+                AI &amp; expert care.
+              </>
+            )}
           </motion.h1>
 
           <motion.p variants={itemVariants} className="mt-7 max-w-md text-pretty text-[17px] leading-relaxed text-muted-foreground">
-            Book in 60 seconds, get an AI-assisted triage before you arrive, and walk out with
-            care that feels as precise as it looks.
+            {heroBanner?.body || "Book in 60 seconds, get an AI-assisted triage before you arrive, and walk out with care that feels as precise as it looks."}
           </motion.p>
 
           <motion.div variants={itemVariants} className="mt-9 flex flex-wrap items-center gap-3">
@@ -203,8 +224,8 @@ export function Hero() {
             <div className="relative overflow-hidden rounded-[28px] border border-white/60 bg-card shadow-lift">
               <div className="relative aspect-[4/4.6] w-full overflow-hidden">
                 <img
-                  src={clinicImages.heroDentalCare}
-                  alt="Dentist examining a patient's teeth during a check-up"
+                  src={heroBanner?.mediaUrl ? resolveApiAsset(heroBanner.mediaUrl) : clinicImages.heroDentalCare}
+                  alt={heroBanner?.title || "Dentist examining a patient's teeth during a check-up"}
                   width={900}
                   height={675}
                   loading="eager"

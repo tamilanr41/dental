@@ -37,6 +37,24 @@ export type Booking = {
   whatsapp?: { patient: string | null; clinic: string | null };
 };
 
+export const SITE_CONTENT_TYPES = ["hero", "blog", "offer", "reel", "video", "image", "badge"] as const;
+export type SiteContentType = (typeof SITE_CONTENT_TYPES)[number];
+
+export type SiteContent = {
+  id: number;
+  type: SiteContentType;
+  title: string;
+  subtitle: string;
+  body: string;
+  mediaUrl: string;
+  linkUrl: string;
+  badgeText: string;
+  published: boolean;
+  displayOrder: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type Slot = { time: string; remaining: number };
 export type Availability = { date: string; closed: boolean; slots: Slot[] };
 
@@ -106,12 +124,28 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   return data as T;
 }
 
+export function resolveApiAsset(url: string) {
+  const value = String(url || "").trim();
+  if (!value) return "";
+  if (/^https?:\/\//i.test(value)) return value;
+  return value.startsWith("/api/") ? API_BASE_URL + value : value;
+}
+
 export const api = {
   get: <T>(path: string, init?: RequestInit) => request<T>(path, init),
   post: <T>(path: string, body?: unknown) =>
     request<T>(path, { method: "POST", body: body ? JSON.stringify(body) : undefined }),
   patch: <T>(path: string, body: unknown) =>
     request<T>(path, { method: "PATCH", body: JSON.stringify(body) }),
+  delete: <T>(path: string) => request<T>(path, { method: "DELETE" }),
+  upload: (file: File) => {
+    const query = new URLSearchParams({ mime: file.type });
+    return request<{ url: string; mimeType: string; size: number }>(`/api/admin/uploads?${query}`, {
+      method: "POST",
+      body: file,
+      headers: { "Content-Type": "application/octet-stream" },
+    });
+  },
 };
 
 export const statusTone: Record<

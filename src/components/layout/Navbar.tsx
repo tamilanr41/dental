@@ -42,7 +42,7 @@ const navLinks = [
   },
   { label: "AI Platform", href: "/ai-features" },
   { label: "Our Dentists", href: "/dentists" },
-  { label: "Patient Portal", href: "/patient-portal" },
+
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -62,7 +62,6 @@ export function Navbar() {
   const initials = user
     ? `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
     : "";
-  const accountHref = user?.role === "admin" ? "/dashboard" : "/patient-portal";
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 12);
@@ -127,21 +126,18 @@ export function Navbar() {
           scrolled || mobileOpen ? "h-[68px]" : "h-[84px]"
         )}
       >
-        <Link to="/" className="group flex min-w-0 shrink-0 items-center gap-2.5" aria-label="Sri Saraswathi Dental Clinic home">
+        <Link to="/" className="group flex min-w-0 shrink-0 items-center" aria-label="Sri Saraswathi Dental Clinic home">
           <img
             src={clinicImages.logoMark}
             alt=""
             aria-hidden="true"
-            width={72}
-            height={48}
+            width={56}
+            height={40}
             fetchPriority="high"
             decoding="async"
-            className="h-12 w-[72px] shrink-0 object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+            className="h-10 w-14 shrink-0 object-contain transition-transform duration-300 group-hover:scale-[1.02]"
           />
-          <span className="min-w-0 leading-tight">
-            <span className="block whitespace-nowrap font-display text-[15px] font-semibold tracking-tight text-ink-950 sm:text-[16px]">Sri Saraswathi</span>
-            <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[0.16em] text-primary-700">Dental Clinic</span>
-          </span>
+
         </Link>
 
         <div className="hidden items-center gap-1 lg:flex">
@@ -272,14 +268,16 @@ export function Navbar() {
                         </span>
                       </div>
                       <div className="p-1.5">
-                        <Link
-                          to={accountHref}
-                          onClick={() => setUserMenuOpen(false)}
-                          className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] text-secondary-700 transition-colors hover:bg-primary-50 hover:text-primary-800"
-                        >
-                          <LayoutDashboard className="h-3.5 w-3.5" />
-                          {user.role === "admin" ? "Admin dashboard" : "My portal"}
-                        </Link>
+                        {user.role === "admin" && (
+                          <Link
+                            to="/dashboard"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] text-secondary-700 transition-colors hover:bg-primary-50 hover:text-primary-800"
+                          >
+                            <LayoutDashboard className="h-3.5 w-3.5" />
+                            Admin dashboard
+                          </Link>
+                        )}
                         {user.role === "patient" && (
                           <Link
                             to="/booking"
@@ -350,13 +348,15 @@ export function Navbar() {
                       {user.role === "admin" ? "Administrator" : "Patient"} · {user.email}
                     </p>
                   </div>
-                  <Link
-                    to={accountHref}
-                    onClick={() => setMobileOpen(false)}
-                    className="shrink-0 rounded-full bg-primary-600 px-3 py-1.5 text-[11.5px] font-semibold text-white"
-                  >
-                    {user.role === "admin" ? "Dashboard" : "My portal"}
-                  </Link>
+                  {user.role === "admin" && (
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setMobileOpen(false)}
+                      className="shrink-0 rounded-full bg-primary-600 px-3 py-1.5 text-[11.5px] font-semibold text-white"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
                 </div>
               )}
               <div className="space-y-1">
@@ -480,7 +480,7 @@ export function Navbar() {
                     onClick={() => setMobileOpen(false)}
                   >
                     <span className="flex items-center gap-2">
-                      <Sparkles className="h-4 w-4 text-primary-600" /> Login to your portal
+                      <Sparkles className="h-4 w-4 text-primary-600" /> Sign in
                     </span>
                     <ArrowRight className="h-4 w-4 text-muted-foreground" />
                   </Link>

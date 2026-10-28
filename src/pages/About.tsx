@@ -161,8 +161,8 @@ export default function AboutPage() {
                   </div>
                   <figure className="mt-7 overflow-hidden rounded-[22px] border border-border/70 bg-card shadow-soft">
                     <img
-                      src={clinicImages.waitingCorridor}
-                      alt="Waiting corridor leading to the dental treatment rooms"
+                      src={clinicImages.practiceErode}
+                      alt="Exterior of Sri Saraswathi Dental Clinic in Erode"
                       loading="lazy"
                       decoding="async"
                       className="aspect-[16/7] w-full object-cover"

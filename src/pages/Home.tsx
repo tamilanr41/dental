@@ -58,8 +58,8 @@ export default function HomePage() {
   return (
     <SiteContentProvider>
       <Hero />
-      <DeferredSection component={TrustBar} minHeight={180} />
       <ManagedContentSection type="blog" />
+      <DeferredSection component={TrustBar} minHeight={180} />
       <DeferredSection component={ServicesOverview} minHeight={1200} />
       <ManagedContentSection type="offer" />
       <DeferredSection component={DentistProfiles} minHeight={800} />

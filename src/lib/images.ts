@@ -13,6 +13,7 @@ export const clinicImages = {
   heroDentalCare: "/images/clinic/hero-dental-care.webp",
   dentistPortrait: "/images/clinic/dentist-portrait.webp",
   exterior: "/images/clinic/clinic-exterior.webp",
+  practiceErode: "/images/clinic/practice-erode.webp",
   reception: "/images/clinic/clinic-reception.webp",
   treatmentChair: "/images/clinic/treatment-chair.webp",
   treatmentRoom: "/images/clinic/treatment-room.webp",

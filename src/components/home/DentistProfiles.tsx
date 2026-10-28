@@ -11,7 +11,7 @@ const doctor = {
   title: "Founder & Chief Dental Surgeon",
   focus: ["Family dentistry", "Restorative care", "Preventive care"],
   bio: "Every visit at Sri Saraswathi Dental Clinic starts with a clear explanation — what is happening, what it will cost, and what your options are. No jargon, no pressure, and a treatment plan you can actually follow.",
-  image: clinicImages.treatmentRoom,
+  image: clinicImages.dentistPortrait,
 };
 
 export function DentistProfiles() {
@@ -46,7 +46,7 @@ export function DentistProfiles() {
                 <div className="relative min-h-[240px] md:min-h-[420px]">
                   <img
                     src={doctor.image}
-                    alt="Dental treatment room at Sri Saraswathi Dental Clinic"
+                    alt="Dr. Dinesh Kumar, dentist at Sri Saraswathi Dental Clinic"
                     width={1360}
                     height={907}
                     loading="lazy"
@@ -57,7 +57,7 @@ export function DentistProfiles() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4">
                     <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/70">
-                      Treatment room · Erode
+                      Dr. Dinesh Kumar · Erode
                     </p>
                   </div>
                 </div>

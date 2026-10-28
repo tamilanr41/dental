@@ -60,6 +60,29 @@ const heroStats = [
   { value: 98, suffix: "%", label: "Would return" },
 ];
 
+const defaultHeroSlides = [
+  {
+    image: clinicImages.heroDentalCare,
+    alt: "Dentist providing a careful dental check-up",
+    eyebrow: "Clinical care",
+    badge: "Care that feels calm",
+    caption: "Thoughtful treatment · Erode",
+  },
+  {
+    image: clinicImages.dentistPortrait,
+    alt: "Dr. Dinesh Kumar at Sri Saraswathi Dental Clinic",
+    eyebrow: "Meet your dentist",
+    badge: "Care led by experience",
+    caption: "Dr. Dinesh Kumar · Erode",
+  },
+  {
+    image: clinicImages.operatoryChair,
+    alt: "Modern dental treatment room at Sri Saraswathi Dental Clinic",
+    eyebrow: "Inside the clinic",
+    badge: "Modern dental care",
+    caption: "Sri Saraswathi Dental Clinic · Erode",
+  },
+] as const;
 export function Hero() {
   const { isLowEnd } = useDeviceDetect();
   const { items: heroBanners } = useSiteContent("hero");
@@ -67,17 +90,19 @@ export function Hero() {
     if (a.displayOrder !== b.displayOrder) return a.displayOrder - b.displayOrder;
     return a.id - b.id;
   });
-  const heroSlideCount = sortedHeroBanners.length + 1;
+  const usesAdminHeroBanners = sortedHeroBanners.length > 0;
+  const heroSlideCount = usesAdminHeroBanners ? sortedHeroBanners.length + 1 : defaultHeroSlides.length;
   const [heroBannerIndex, setHeroBannerIndex] = useState(0);
   useEffect(() => {
     setHeroBannerIndex(0);
     if (heroSlideCount < 2) return;
     const timer = window.setInterval(() => {
       setHeroBannerIndex((index) => (index + 1) % heroSlideCount);
-    }, 6500);
+    }, 4500);
     return () => window.clearInterval(timer);
   }, [heroSlideCount]);
-  const heroBanner = heroBannerIndex === 0 ? null : sortedHeroBanners[heroBannerIndex - 1];
+  const heroBanner = usesAdminHeroBanners && heroBannerIndex > 0 ? sortedHeroBanners[heroBannerIndex - 1] : null;
+  const defaultHeroSlide = defaultHeroSlides[usesAdminHeroBanners ? 0 : heroBannerIndex] ?? defaultHeroSlides[0];
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const bgX = useTransform(mouseX, [-1, 1], [-14, 14]);
@@ -229,9 +254,9 @@ export function Hero() {
               <div className="relative aspect-[4/4.6] w-full overflow-hidden">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.img
-                    key={heroBanner?.id ?? "clinic-default"}
-                    src={heroBanner?.mediaUrl ? resolveApiAsset(heroBanner.mediaUrl) : clinicImages.heroDentalCare}
-                    alt={heroBanner?.title || "Dentist examining a patient's teeth during a check-up"}
+                    key={heroBanner?.id ?? "clinic-default-" + heroBannerIndex}
+                    src={heroBanner?.mediaUrl ? resolveApiAsset(heroBanner.mediaUrl) : defaultHeroSlide.image}
+                    alt={heroBanner?.title || defaultHeroSlide.alt}
                     width={900}
                     height={675}
                     loading="eager"
@@ -248,10 +273,10 @@ export function Hero() {
 
                 <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
                   <div className="rounded-2xl border border-white/15 bg-white/10 p-3 pr-5 backdrop-blur-md">
-                    <p className="text-[10px] uppercase tracking-[0.16em] text-white/60">{heroBanner ? "Clinic spotlight" : "Live case"}</p>
-                    <p className="mt-1 font-display text-lg leading-tight text-white">{heroBanner?.badgeText || "Digital smile preview"}</p>
+                    <p className="text-[10px] uppercase tracking-[0.16em] text-white/60">{heroBanner ? "Clinic spotlight" : defaultHeroSlide.eyebrow}</p>
+                    <p className="mt-1 font-display text-lg leading-tight text-white">{heroBanner?.badgeText || defaultHeroSlide.badge}</p>
                     <div className="mt-2 flex items-center gap-1.5 text-[11px] text-white/70">
-                      <Check className="h-3 w-3 text-emerald-300" /> {heroBanner?.subtitle || "3D scan complete · 12s"}
+                      <Check className="h-3 w-3 text-emerald-300" /> {heroBanner?.subtitle || defaultHeroSlide.caption}
                     </div>
                   </div>
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-lg">

@@ -271,6 +271,18 @@
   background: rgba(250, 251, 248, 0.88);
 }
 
+.dashboard-main,
+.dashboard-sidebar nav {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dashboard-main::-webkit-scrollbar,
+.dashboard-sidebar nav::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
 .dashboard-main {
   background:
     radial-gradient(ellipse at 96% 0%, rgba(203, 225, 193, 0.28), transparent 26rem),

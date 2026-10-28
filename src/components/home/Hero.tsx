@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { AnimatePresence, motion, useMotionValue, useTransform } from "framer-motion";
 import { ArrowRight, Play, Sparkles, Shield, Star, Bot, CalendarCheck, Check } from "lucide-react";
 import { useDeviceDetect } from "@/hooks/useDeviceDetect";
 import { NumberTicker } from "@/components/animations/NumberTicker";
@@ -67,17 +67,17 @@ export function Hero() {
     if (a.displayOrder !== b.displayOrder) return a.displayOrder - b.displayOrder;
     return a.id - b.id;
   });
+  const heroSlideCount = sortedHeroBanners.length + 1;
   const [heroBannerIndex, setHeroBannerIndex] = useState(0);
   useEffect(() => {
     setHeroBannerIndex(0);
-    if (sortedHeroBanners.length < 2) return;
+    if (heroSlideCount < 2) return;
     const timer = window.setInterval(() => {
-      setHeroBannerIndex((index) => (index + 1) % sortedHeroBanners.length);
+      setHeroBannerIndex((index) => (index + 1) % heroSlideCount);
     }, 6500);
     return () => window.clearInterval(timer);
-  }, [sortedHeroBanners.length]);
-  const heroBanner = sortedHeroBanners.length ? sortedHeroBanners[heroBannerIndex % sortedHeroBanners.length] : null;
-  // heroBanner defined above with sorted order
+  }, [heroSlideCount]);
+  const heroBanner = heroBannerIndex === 0 ? null : sortedHeroBanners[heroBannerIndex - 1];
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const bgX = useTransform(mouseX, [-1, 1], [-14, 14]);
@@ -227,24 +227,31 @@ export function Hero() {
             <div className="absolute -inset-3 -z-10 rounded-[36px] bg-gradient-to-br from-primary-200/50 via-transparent to-accent-200/40 blur-2xl" />
             <div className="relative overflow-hidden rounded-[28px] border border-white/60 bg-card shadow-lift">
               <div className="relative aspect-[4/4.6] w-full overflow-hidden">
-                <img
-                  src={heroBanner?.mediaUrl ? resolveApiAsset(heroBanner.mediaUrl) : clinicImages.heroDentalCare}
-                  alt={heroBanner?.title || "Dentist examining a patient's teeth during a check-up"}
-                  width={900}
-                  height={675}
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="async"
-                  className="h-full w-full object-cover"
-                />
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.img
+                    key={heroBanner?.id ?? "clinic-default"}
+                    src={heroBanner?.mediaUrl ? resolveApiAsset(heroBanner.mediaUrl) : clinicImages.heroDentalCare}
+                    alt={heroBanner?.title || "Dentist examining a patient's teeth during a check-up"}
+                    width={900}
+                    height={675}
+                    loading="eager"
+                    fetchPriority={heroBannerIndex === 0 ? "high" : "auto"}
+                    decoding="async"
+                    initial={{ opacity: 0, scale: 1.025 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.985 }}
+                    transition={{ duration: 0.45, ease: "easeInOut" }}
+                    className="h-full w-full object-cover"
+                  />
+                </AnimatePresence>
                 <div className="absolute inset-0 bg-gradient-to-t from-ink-950/55 via-ink-950/5 to-transparent" />
 
                 <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
                   <div className="rounded-2xl border border-white/15 bg-white/10 p-3 pr-5 backdrop-blur-md">
-                    <p className="text-[10px] uppercase tracking-[0.16em] text-white/60">Live case</p>
-                    <p className="mt-1 font-display text-lg leading-tight text-white">Digital smile preview</p>
+                    <p className="text-[10px] uppercase tracking-[0.16em] text-white/60">{heroBanner ? "Clinic spotlight" : "Live case"}</p>
+                    <p className="mt-1 font-display text-lg leading-tight text-white">{heroBanner?.badgeText || "Digital smile preview"}</p>
                     <div className="mt-2 flex items-center gap-1.5 text-[11px] text-white/70">
-                      <Check className="h-3 w-3 text-emerald-300" /> 3D scan complete · 12s
+                      <Check className="h-3 w-3 text-emerald-300" /> {heroBanner?.subtitle || "3D scan complete · 12s"}
                     </div>
                   </div>
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-lg">
@@ -303,6 +310,24 @@ export function Hero() {
               </>
             )}
           </motion.div>
+
+          {heroSlideCount > 1 && (
+            <div className="mt-4 flex items-center justify-center gap-2.5 lg:justify-start lg:pl-2" aria-label="Hero slides">
+              {Array.from({ length: heroSlideCount }, (_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => setHeroBannerIndex(index)}
+                  aria-label={index === 0 ? "Show the clinic hero slide" : "Show added hero banner " + index}
+                  aria-pressed={heroBannerIndex === index}
+                  className={"h-2 rounded-full transition-all duration-300 " + (heroBannerIndex === index ? "w-7 bg-primary-700" : "w-2 bg-primary-200 hover:bg-primary-400")}
+                />
+              ))}
+              <span className="ml-1 text-[10px] font-semibold tabular-nums text-muted-foreground">
+                {String(heroBannerIndex + 1).padStart(2, "0")} / {String(heroSlideCount).padStart(2, "0")}
+              </span>
+            </div>
+          )}
 
           <div className="mt-5 flex items-center justify-center gap-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground lg:justify-start lg:pl-2">
             <span className="h-px w-8 bg-border" />

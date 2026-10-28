@@ -5,6 +5,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { clinicImages } from "@/lib/images";
 import { useAuth } from "@/lib/use-auth";
+import { resolveApiAsset } from "@/lib/api";
+import { useSiteContent } from "@/components/home/SiteContentSections";
 import { Button } from "@/components/ui/Button";
 import {
   Menu,
@@ -57,11 +59,28 @@ export function Navbar() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const { items: offerItems } = useSiteContent("offer");
+  const sortedOffers = [...offerItems].sort((a, b) => {
+    if (a.displayOrder !== b.displayOrder) return a.displayOrder - b.displayOrder;
+    return a.id - b.id;
+  });
+  const offerSignature = sortedOffers.map((item) => item.id).join(",");
+  const [activeOfferIndex, setActiveOfferIndex] = useState(0);
+  const activeOffer = sortedOffers.length ? sortedOffers[activeOfferIndex % sortedOffers.length] : null;
 
   const displayName = user ? `${user.firstName} ${user.lastName}`.trim() : "";
   const initials = user
     ? `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`.toUpperCase()
     : "";
+
+  useEffect(() => {
+    setActiveOfferIndex(0);
+    if (sortedOffers.length < 2) return;
+    const timer = window.setInterval(() => {
+      setActiveOfferIndex((index) => (index + 1) % sortedOffers.length);
+    }, 5500);
+    return () => window.clearInterval(timer);
+  }, [offerSignature]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 12);
@@ -112,20 +131,55 @@ export function Navbar() {
 
   return (
     <>
-    <div className="fixed inset-x-0 top-0 z-[60]">
-      <div className="relative overflow-hidden bg-gradient-to-r from-ink-950 via-primary-900 to-ink-950 text-white">
-        <div className="absolute inset-0 opacity-40">
+    <div className="fixed inset-x-0 top-0 z-[60] h-[30px]">
+      <div className="relative h-full overflow-hidden bg-gradient-to-r from-ink-950 via-primary-900 to-ink-950 text-white">
+        <div className="pointer-events-none absolute inset-0 opacity-40">
           <div className="absolute -left-10 top-1/2 h-10 w-40 -translate-y-1/2 rotate-12 bg-accent/30 blur-2xl" />
           <div className="absolute right-0 top-1/2 h-10 w-48 -translate-y-1/2 -rotate-12 bg-white/10 blur-2xl" />
         </div>
-        <div className="container-x relative flex items-center justify-center gap-2 overflow-hidden py-1.5 text-center text-[11px]">
-          <Sparkles className="h-3.5 w-3.5 text-accent-300" />
-          <span className="font-medium">New patient offer — Free consultation on first visit</span>
-          <span className="hidden sm:inline">·</span>
-          <Link to="/booking" className="hidden items-center gap-1 font-semibold text-accent-200 transition hover:text-white sm:inline-flex">
-            Book now <ArrowRight className="h-3 w-3" />
-          </Link>
-          <div className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+        <div className="container-x relative flex h-full items-center justify-center gap-2 overflow-hidden px-2 text-center text-[10px] sm:text-[11px]">
+          <Sparkles className="h-3.5 w-3.5 shrink-0 text-accent-300" />
+          {activeOffer?.mediaUrl && (
+            <img
+              src={resolveApiAsset(activeOffer.mediaUrl)}
+              alt=""
+              aria-hidden="true"
+              className="h-5 w-5 shrink-0 rounded-full border border-white/30 object-cover"
+            />
+          )}
+          <span className="shrink-0 rounded-full bg-white/10 px-2 py-0.5 font-bold uppercase tracking-[0.12em] text-accent-200">
+            {activeOffer?.badgeText || (activeOffer ? "Clinic offer" : "New patient offer")}
+          </span>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={activeOffer?.id ?? "welcome-offer"}
+              initial={{ opacity: 0, y: 7 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -7 }}
+              transition={{ duration: 0.22 }}
+              className="min-w-0 truncate font-medium"
+            >
+              {activeOffer?.title || "Free consultation on your first visit"}
+              {activeOffer?.subtitle ? " · " + activeOffer.subtitle : ""}
+            </motion.span>
+          </AnimatePresence>
+          {activeOffer?.linkUrl?.startsWith("https://") ? (
+            <a
+              href={activeOffer.linkUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden shrink-0 items-center gap-1 font-semibold text-accent-200 transition hover:text-white sm:inline-flex"
+            >
+              View offer <ArrowRight className="h-3 w-3" />
+            </a>
+          ) : (
+            <Link
+              to={activeOffer?.linkUrl || "/booking"}
+              className="hidden shrink-0 items-center gap-1 font-semibold text-accent-200 transition hover:text-white sm:inline-flex"
+            >
+              {activeOffer ? "View offer" : "Book now"} <ArrowRight className="h-3 w-3" />
+            </Link>
+          )}
         </div>
       </div>
     </div>
@@ -350,7 +404,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="fixed inset-x-0 top-[68px] bottom-0 z-[45] overflow-y-auto border-t border-border/70 bg-background lg:hidden"
+            className="fixed inset-x-0 top-[98px] bottom-0 z-[45] overflow-y-auto border-t border-border/70 bg-background lg:hidden"
           >
             <div className="container-x flex min-h-full flex-col py-5">
               {user && (

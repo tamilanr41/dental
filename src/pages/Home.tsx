@@ -1,11 +1,11 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ComponentType, type LazyExoticComponent } from "react";
 import { Hero } from "@/components/home/Hero";
 import { LiveChat } from "@/components/home/LiveChat";
-import { ManagedContentSection, ManagedMediaSection, SiteContentProvider } from "@/components/home/SiteContentSections";
+import { ManagedContentSection, ManagedMediaSection } from "@/components/home/SiteContentSections";
 import { TrustBar } from "@/components/home/TrustBar";
 import { Gallery } from "@/components/home/Gallery";
 
-type HomeSection = LazyExoticComponent<ComponentType>;
+type HomeSection = ComponentType | LazyExoticComponent<ComponentType>;
 
 const ServicesOverview = lazy(() => import("@/components/home/ServicesOverview").then((module) => ({ default: module.ServicesOverview })));
 const DentistProfiles = lazy(() => import("@/components/home/DentistProfiles").then((module) => ({ default: module.DentistProfiles })));
@@ -55,12 +55,12 @@ function DeferredSection({ component: Section, minHeight }: { component: HomeSec
 
 export default function HomePage() {
   return (
-    <SiteContentProvider>
+    <>
       <Hero />
       <DeferredSection component={TrustBar} minHeight={140} />
       <ManagedContentSection type="blog" />
       <DeferredSection component={ServicesOverview} minHeight={1200} />
-      <ManagedContentSection type="offer" />
+
       <DeferredSection component={DentistProfiles} minHeight={800} />
       <DeferredSection component={PatientJourney} minHeight={800} />
       <DeferredSection component={AiWorkspace} minHeight={850} />
@@ -72,6 +72,6 @@ export default function HomePage() {
       <DeferredSection component={LocationSection} minHeight={700} />
       <DeferredSection component={CTASection} minHeight={500} />
       <LiveChat />
-    </SiteContentProvider>
+    </>
   );
 }

@@ -9,6 +9,7 @@ import { CursorFollow } from "@/components/animations/CursorFollow";
 import { Providers } from "@/components/layout/Providers";
 import { RequireRole } from "@/components/auth/RequireRole";
 import { prefetchRoute } from "@/lib/route-prefetch";
+import { SiteContentProvider } from "@/components/home/SiteContentSections";
 
 const Home = lazy(() => import("@/pages/Home"));
 const About = lazy(() => import("@/pages/About"));
@@ -133,16 +134,18 @@ export default function App() {
       {isDashboard ? (
         <AppRoutes />
       ) : (
-        <>
-          <Navbar />
-          <main className="overflow-x-hidden">
-            <AppRoutes />
-          </main>
-          <Footer />
-          <FloatingEmergencyButton />
-          <LanguageToggle />
-          <CursorFollow />
-        </>
+        <SiteContentProvider>
+          <>
+            <Navbar />
+            <main className="overflow-x-hidden">
+              <AppRoutes />
+            </main>
+            <Footer />
+            <FloatingEmergencyButton />
+            <LanguageToggle />
+            <CursorFollow />
+          </>
+        </SiteContentProvider>
       )}
     </Providers>
   );

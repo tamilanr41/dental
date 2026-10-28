@@ -76,30 +76,39 @@ export function ManagedContentSection({ type }: { type: "blog" | "offer" | "badg
 
   if (type === "badge") {
     return (
-      <section className="section-pad relative overflow-hidden bg-ink-950 text-white">
+      <section className="section-pad relative overflow-hidden bg-gradient-to-b from-[#f7f7f2] via-background to-[#f2f5f3]">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-primary-500/20 blur-[120px]" />
-          <div className="absolute -right-16 bottom-0 h-72 w-72 rounded-full bg-accent-400/15 blur-[140px]" />
+          <div className="absolute -left-20 top-8 h-64 w-64 rounded-full bg-accent-100/70 blur-[110px]" />
+          <div className="absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-primary-100/70 blur-[120px]" />
         </div>
         <div className="container-x relative">
-          <div className="max-w-2xl">
-            <p className="eyebrow text-white/60"><span className="eyebrow-dot" />{info.eyebrow}</p>
-            <h2 className="mt-4 text-display-2 text-balance text-white">{info.title}</h2>
-            <p className="mt-4 text-pretty text-[16px] leading-relaxed text-white/60">{info.description}</p>
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow justify-center"><span className="eyebrow-dot" />{info.eyebrow}</p>
+            <h2 className="mt-4 text-display-2 text-balance text-foreground">{info.title}</h2>
+            <p className="mt-4 text-pretty text-[16px] leading-relaxed text-muted-foreground">{info.description}</p>
           </div>
-          <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mx-auto mt-10 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {sortedItems.map((item) => (
-              <article key={item.id} className="flex min-h-28 items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.055] p-4 transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.09]">
-                {item.mediaUrl ? (
-                  <img src={resolveApiAsset(item.mediaUrl)} alt="" loading="lazy" decoding="async" className="h-12 w-12 shrink-0 rounded-xl bg-white object-contain p-1.5" />
-                ) : (
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/10 text-accent-300"><BadgeCheck className="h-5 w-5" /></span>
-                )}
-                <div className="min-w-0">
-                  {item.badgeText && <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-accent-200">{item.badgeText}</p>}
-                  <h3 className="mt-1 font-display text-base leading-tight text-white">{item.title}</h3>
-                  {item.subtitle && <p className="mt-1 text-xs leading-relaxed text-white/55">{item.subtitle}</p>}
-                </div>
+              <article key={item.id} className="group relative flex min-h-64 flex-col items-center overflow-hidden rounded-[28px] border border-accent-200/70 bg-gradient-to-br from-white via-[#fffefa] to-[#f5f0df] px-5 py-7 text-center shadow-soft transition duration-300 hover:-translate-y-1 hover:border-accent-300 hover:shadow-lift">
+                <span className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary-700 via-accent-400 to-primary-700" />
+                <span className="absolute -right-10 -top-10 h-32 w-32 rounded-full border border-accent-100/80 transition-transform duration-500 group-hover:scale-125" />
+                <span className="relative grid h-[82px] w-[82px] shrink-0 place-items-center rounded-full border border-accent-300 bg-white p-3 shadow-card ring-4 ring-accent-50">
+                  {item.mediaUrl ? (
+                    <img src={resolveApiAsset(item.mediaUrl)} alt={item.title} loading="lazy" decoding="async" className="h-full w-full object-contain" />
+                  ) : (
+                    <BadgeCheck className="h-9 w-9 text-primary-700" strokeWidth={1.5} />
+                  )}
+                </span>
+                <span className="mt-5 inline-flex rounded-full border border-accent-200 bg-accent-50/80 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-accent-800">
+                  {item.badgeText || "Clinic credential"}
+                </span>
+                <h3 className="mt-3 font-display text-lg font-semibold leading-tight tracking-tight text-foreground">{item.title}</h3>
+                {item.subtitle && <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{item.subtitle}</p>}
+                <span className="mt-auto flex w-full items-center gap-2 pt-5 text-accent-700/70">
+                  <span className="h-px flex-1 bg-accent-200/70" />
+                  <Sparkles className="h-3.5 w-3.5" />
+                  <span className="h-px flex-1 bg-accent-200/70" />
+                </span>
               </article>
             ))}
           </div>
@@ -114,10 +123,19 @@ export function ManagedContentSection({ type }: { type: "blog" | "offer" | "badg
         <SectionHeading align="center" eyebrow={info.eyebrow} title={<>{info.title}</>} description={info.description} />
         <div className={"mx-auto mt-11 grid max-w-6xl gap-5 " + (type === "blog" ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-2")}>
           {sortedItems.map((item) => (
-            <ContentLink key={item.id} item={item} className="group block overflow-hidden rounded-[24px] border border-border/70 bg-card shadow-soft transition duration-300 hover:-translate-y-1 hover:shadow-lift">
-              {item.mediaUrl && <img src={resolveApiAsset(item.mediaUrl)} alt={item.title} loading="lazy" decoding="async" className={"w-full object-cover " + (type === "offer" ? "aspect-[2/1]" : "aspect-[1.7/1]")} />}
-              <div className="p-5 md:p-6">
-                {item.badgeText && <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-accent-800"><Sparkles className="h-3 w-3" />{item.badgeText}</span>}
+            <ContentLink key={item.id} item={item} className="group block overflow-hidden rounded-[26px] border border-border/70 bg-card shadow-soft transition duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-lift">
+              {item.mediaUrl && (
+                <div className="relative overflow-hidden">
+                  <img src={resolveApiAsset(item.mediaUrl)} alt={item.title} loading="lazy" decoding="async" className="aspect-[1.7/1] w-full object-cover transition duration-700 group-hover:scale-[1.035]" />
+                  <span className="absolute left-4 top-4 rounded-full border border-white/30 bg-ink-950/75 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-white backdrop-blur">
+                    {item.badgeText || "Clinic journal"}
+                  </span>
+                </div>
+              )}
+              <div className="relative p-5 md:p-6">
+                <span className="inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.16em] text-primary-700">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent-500" /> Dental care · Insights
+                </span>
                 <h3 className="mt-3 font-display text-xl font-medium tracking-tight text-foreground">{item.title}</h3>
                 {item.subtitle && <p className="mt-1.5 text-sm font-medium text-primary-800">{item.subtitle}</p>}
                 {item.body && <p className="mt-3 line-clamp-4 text-sm leading-relaxed text-muted-foreground">{item.body}</p>}

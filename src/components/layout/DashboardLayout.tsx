@@ -179,15 +179,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               src={clinicImages.logoMark}
               alt=""
               aria-hidden="true"
-              width={40}
-              height={40}
+              width={66}
+              height={44}
               decoding="async"
-              className={cn("shrink-0 object-contain brightness-0 invert", collapsed ? "h-9 w-9" : "h-10 w-10")}
+              className={cn("shrink-0 object-contain brightness-0 invert", collapsed ? "h-9 w-[54px]" : "h-11 w-[66px]")}
             />
             {!collapsed && (
               <span className="min-w-0 leading-tight">
-                <span className="block whitespace-nowrap font-display text-[13px] font-semibold text-white">Sri Saraswathi</span>
-                <span className="mt-0.5 block text-[8px] font-semibold uppercase tracking-[0.16em] text-white/50">Dental Clinic</span>
+                <span className="block whitespace-nowrap font-display text-[14px] font-semibold text-white">Sri Saraswathi</span>
+                <span className="mt-0.5 block text-[9px] font-semibold uppercase tracking-[0.16em] text-white/50">Dental Clinic</span>
               </span>
             )}
           </Link>

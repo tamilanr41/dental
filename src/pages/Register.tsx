@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/Input";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
 import { useAuth } from "@/lib/use-auth";
 import { ApiError } from "@/lib/api";
+import { clinicImages } from "@/lib/images";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -78,10 +79,16 @@ export default function RegisterPage() {
         <div className="w-full max-w-lg">
           <div className="mb-8 text-center">
             <Link to="/" className="inline-flex items-center gap-2.5">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-ink-950 font-display text-lg text-white">
-                S
-              </span>
-              <span className="font-display text-xl font-medium tracking-tight text-foreground">
+              <img
+                src={clinicImages.logoMark}
+                alt=""
+                aria-hidden="true"
+                width={72}
+                height={48}
+                decoding="async"
+                className="h-12 w-[72px] object-contain"
+              />
+              <span className="font-display text-lg font-medium tracking-tight text-foreground sm:text-xl">
                 Sri Saraswathi Dental Clinic
               </span>
             </Link>

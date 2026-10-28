@@ -69,15 +69,15 @@ export function Footer() {
                 src={clinicImages.logoMark}
                 alt=""
                 aria-hidden="true"
-                width={48}
-                height={48}
+                width={84}
+                height={56}
                 loading="lazy"
                 decoding="async"
-                className="h-11 w-11 object-contain brightness-0 invert"
+                className="h-14 w-[84px] object-contain brightness-0 invert"
               />
               <span className="leading-tight">
-                <span className="block font-display text-[15px] font-semibold text-white">Sri Saraswathi</span>
-                <span className="mt-1 block text-[9px] font-semibold uppercase tracking-[0.18em] text-white/55">Dental Clinic</span>
+                <span className="block font-display text-[16px] font-semibold text-white">Sri Saraswathi</span>
+                <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-white/55">Dental Clinic</span>
               </span>
             </Link>
             <p className="max-w-xs text-sm leading-relaxed">

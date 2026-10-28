@@ -132,15 +132,15 @@ export function Navbar() {
             src={clinicImages.logoMark}
             alt=""
             aria-hidden="true"
-            width={48}
+            width={72}
             height={48}
             fetchPriority="high"
             decoding="async"
-            className="h-11 w-11 shrink-0 object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+            className="h-12 w-[72px] shrink-0 object-contain transition-transform duration-300 group-hover:scale-[1.02]"
           />
           <span className="min-w-0 leading-tight">
-            <span className="block whitespace-nowrap font-display text-[14px] font-semibold tracking-tight text-ink-950 sm:text-[15px]">Sri Saraswathi</span>
-            <span className="mt-0.5 block text-[9px] font-semibold uppercase tracking-[0.18em] text-primary-700">Dental Clinic</span>
+            <span className="block whitespace-nowrap font-display text-[15px] font-semibold tracking-tight text-ink-950 sm:text-[16px]">Sri Saraswathi</span>
+            <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[0.16em] text-primary-700">Dental Clinic</span>
           </span>
         </Link>
 

@@ -103,9 +103,6 @@ export function Hero() {
   }, [heroSlideCount]);
   const heroBanner = usesAdminHeroBanners && heroBannerIndex > 0 ? sortedHeroBanners[heroBannerIndex - 1] : null;
   const defaultHeroSlide = defaultHeroSlides[usesAdminHeroBanners ? 0 : heroBannerIndex] ?? defaultHeroSlides[0];
-  const heroCtaLabel = heroBanner?.ctaLabel || "Book in 60 seconds";
-  const heroCtaHref = heroBanner?.linkUrl || "/booking";
-  const heroCtaIsExternal = /^https:\/\//i.test(heroCtaHref);
   const [isNarrow, setIsNarrow] = useState(false);
 
   useEffect(() => {
@@ -160,59 +157,34 @@ export function Hero() {
             <span className="inline-flex items-center gap-2 rounded-full border border-primary-200/70 bg-gradient-to-r from-primary-50/90 to-white py-1.5 pl-1.5 pr-4 text-[12px] font-medium text-foreground/80 shadow-[0_10px_40px_-20px_rgba(18,56,72,0.9)] backdrop-blur">
               <span className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-ink-950 via-primary-800 to-ink-950 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.18em] text-white shadow-[0_10px_30px_-18px_rgba(255,255,255,0.9)]">
                 <Sparkles className="h-3 w-3 animate-pulse text-accent-300" />
-                {heroBanner?.badgeText || "Featured"}
+                Featured
               </span>
-              <span className="line-clamp-1">{heroBanner ? (heroBanner.subtitle || heroBanner.title || "Precision dental care reimagined") : "AI dental operating system"}</span>
+              <span className="line-clamp-1">AI dental operating system</span>
             </span>
           </motion.div>
 
           <motion.h1 variants={itemVariants} className="mt-7 text-display-1 text-balance text-foreground">
-            {heroBanner ? (
-              <>
-                <span className="whitespace-pre-line">{heroBanner.title}</span>
-                {heroBanner.subtitle && <><br /><span className="italic text-primary-700">{heroBanner.subtitle}</span></>}
-              </>
-            ) : (
-              <>
-                Your smile,
-                <br />
-                <span className="italic text-primary-700">reimagined</span> by
-                <br />
-                AI &amp; expert care.
-              </>
-            )}
+            Your smile,
+            <br />
+            <span className="italic text-primary-700">reimagined</span> by
+            <br />
+            AI &amp; expert care.
           </motion.h1>
 
           <motion.p variants={itemVariants} className="mt-7 max-w-md text-pretty text-[17px] leading-relaxed text-muted-foreground">
-            {heroBanner
-              ? heroBanner.body || "Personalised dental care from Dr. Kishore Kumar and the Sri Saraswathi team in Erode."
-              : "Book in 60 seconds, get an AI-assisted triage before you arrive, and walk out with care that feels as precise as it looks."}
+            Book in 60 seconds, get an AI-assisted triage before you arrive, and walk out with care that feels as precise as it looks.
           </motion.p>
 
           <motion.div variants={itemVariants} className="mt-9 flex flex-wrap items-center gap-3">
-            {heroCtaIsExternal ? (
-              <a
-                href={heroCtaHref}
-                target="_blank"
-                rel="noreferrer"
-                data-cursor={heroCtaLabel}
-                className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_18px_36px_-18px_rgba(18,56,72,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-800"
-              >
-                <CalendarCheck className="h-4 w-4" />
-                {heroCtaLabel}
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
-            ) : (
-              <Link
-                to={heroCtaHref}
-                data-cursor={heroCtaLabel}
-                className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_18px_36px_-18px_rgba(18,56,72,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-800"
-              >
-                <CalendarCheck className="h-4 w-4" />
-                {heroCtaLabel}
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
-            )}
+            <Link
+              to="/booking"
+              data-cursor="Book in 60 seconds"
+              className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_18px_36px_-18px_rgba(18,56,72,0.8)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary-800"
+            >
+              <CalendarCheck className="h-4 w-4" />
+              Book in 60 seconds
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
             <Link
               to="/ai-features"
               data-cursor="See AI"
@@ -305,10 +277,10 @@ export function Hero() {
 
                 <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
                   <div className="rounded-2xl border border-white/15 bg-white/10 p-3 pr-5 backdrop-blur-md">
-                    <p className="text-[10px] uppercase tracking-[0.16em] text-white/60">{heroBanner ? "Clinic spotlight" : defaultHeroSlide.eyebrow}</p>
-                    <p className="mt-1 font-display text-lg leading-tight text-white">{heroBanner?.badgeText || defaultHeroSlide.badge}</p>
+                    <p className="text-[10px] uppercase tracking-[0.16em] text-white/60">{defaultHeroSlide.eyebrow}</p>
+                    <p className="mt-1 font-display text-lg leading-tight text-white">{defaultHeroSlide.badge}</p>
                     <div className="mt-2 flex items-center gap-1.5 text-[11px] text-white/70">
-                      <Check className="h-3 w-3 text-emerald-300" /> {heroBanner?.subtitle || defaultHeroSlide.caption}
+                      <Check className="h-3 w-3 text-emerald-300" /> {defaultHeroSlide.caption}
                     </div>
                   </div>
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-lg">

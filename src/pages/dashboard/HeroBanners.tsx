@@ -4,20 +4,24 @@ import { resolveApiAsset } from "@/lib/api";
 function HeroPreview({ draft }: { draft: ContentDraft }) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-border/70 bg-ink-950">
-      {draft.mediaUrl && (
+      {draft.mediaUrl ? (
         <img
           src={resolveApiAsset(draft.mediaUrl)}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover opacity-40"
+          className="aspect-[4/4.6] w-full object-cover"
         />
+      ) : (
+        <div className="grid aspect-[4/4.6] place-items-center px-6 text-center text-xs text-white/60">
+          Add a hero image
+        </div>
       )}
-      <div className="relative px-5 py-7 text-white">
-        <p className="text-[9.5px] font-semibold uppercase tracking-[0.16em] text-white/50">Homepage hero</p>
-        <p className="mt-2 max-w-md font-display text-2xl leading-snug">{draft.title || "Your banner title"}</p>
-        {draft.subtitle && <p className="mt-1.5 text-[13px] text-primary-200">{draft.subtitle}</p>}
-        <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-1.5 text-[11.5px] font-semibold text-ink-950">
-          {draft.ctaLabel || "Book an appointment"}
-        </span>
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/85 to-transparent p-4">
+        <p className="text-[9.5px] font-semibold uppercase tracking-[0.16em] text-white/60">
+          Slides into the homepage hero
+        </p>
+        <p className="mt-1 text-[12.5px] text-white/80">
+          Headline, buttons and clinic text stay the same.
+        </p>
       </div>
     </div>
   );
@@ -28,18 +32,10 @@ export default function HeroBannersPage() {
     <ContentManager
       type="hero"
       heading="Hero banners"
-      description="Banners rotate at the top of the homepage. Published banners appear immediately; drafts stay private."
+      description="Upload a photo — it joins the homepage hero slideshow. Only the image changes; the headline, buttons and clinic text stay the same."
       addLabel="Add hero banner"
-      fields={[
-        "title",
-        "subtitle",
-        "mediaUrl",
-        "mobileMediaUrl",
-        "ctaLabel",
-        "linkUrl",
-        "displayOrder",
-        "published",
-      ]}
+      fields={["title", "mediaUrl", "mobileMediaUrl", "displayOrder", "published"]}
+      requiredMedia={["mediaUrl"]}
       preview={(draft) => <HeroPreview draft={draft} />}
     />
   );

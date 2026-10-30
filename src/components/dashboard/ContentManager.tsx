@@ -468,7 +468,14 @@ export function ContentManagerPanel({
       >
         <form onSubmit={save} className="max-h-[72vh] space-y-4 overflow-y-auto pr-1">
           {fields.includes("title") && (
-            <Input label="Title" required maxLength={140} value={draft.title} onChange={(event) => update("title", event.target.value)} />
+            <Input
+              label={type === "hero" ? "Banner name" : "Title"}
+              required
+              maxLength={140}
+              value={draft.title}
+              onChange={(event) => update("title", event.target.value)}
+              helperText={type === "hero" ? "Used only inside the dashboard to identify this image." : undefined}
+            />
           )}
           {fields.includes("slug") && (
             <Input

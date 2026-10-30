@@ -27,7 +27,7 @@ export default function DentistsPage() {
               The dentist you&apos;ll actually <span className="italic text-primary-700">see.</span>
             </>
           }
-          description="Sri Saraswathi Dental Clinic is led by Dr. Dinesh Kumar — the same clinical lead at every visit, with treatment plans explained in plain language."
+          description="Sri Saraswathi Dental Clinic is led by Dr. Kishore Kumar — the same clinical lead at every visit, with treatment plans explained in plain language."
           actions={
             <Button asChild size="lg">
               <Link to="/booking">
@@ -75,7 +75,7 @@ export default function DentistsPage() {
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <h2 className="font-display text-2xl font-medium text-foreground md:text-[28px]">
-                          Dr. Dinesh Kumar
+                          Dr. Kishore Kumar
                         </h2>
                         <p className="mt-1 text-[13px] font-medium text-primary-700">
                           Founder &amp; Chief Dental Surgeon
@@ -95,7 +95,7 @@ export default function DentistsPage() {
                     </div>
 
                     <p className="mt-4 text-pretty text-[14px] leading-relaxed text-muted-foreground">
-                      Dr. Dinesh Kumar founded Sri Saraswathi Dental Clinic in Erode with a simple
+                      Dr. Kishore Kumar founded Sri Saraswathi Dental Clinic in Erode with a simple
                       promise: explain the problem clearly, show the options, and let you decide.
                       Every visit starts with a conversation — what is happening, what it will
                       cost, and what happens next — before any treatment begins.

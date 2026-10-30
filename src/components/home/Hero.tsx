@@ -70,10 +70,10 @@ const defaultHeroSlides = [
   },
   {
     image: clinicImages.dentistPortrait,
-    alt: "Dr. Dinesh Kumar at Sri Saraswathi Dental Clinic",
+    alt: "Dr. Kishore Kumar at Sri Saraswathi Dental Clinic",
     eyebrow: "Meet your dentist",
     badge: "Care led by experience",
-    caption: "Dr. Dinesh Kumar · Erode",
+    caption: "Dr. Kishore Kumar · Erode",
   },
   {
     image: clinicImages.operatoryChair,
@@ -185,7 +185,7 @@ export function Hero() {
 
           <motion.p variants={itemVariants} className="mt-7 max-w-md text-pretty text-[17px] leading-relaxed text-muted-foreground">
             {heroBanner
-              ? heroBanner.body || "Personalised dental care from Dr. Dinesh Kumar and the Sri Saraswathi team in Erode."
+              ? heroBanner.body || "Personalised dental care from Dr. Kishore Kumar and the Sri Saraswathi team in Erode."
               : "Book in 60 seconds, get an AI-assisted triage before you arrive, and walk out with care that feels as precise as it looks."}
           </motion.p>
 

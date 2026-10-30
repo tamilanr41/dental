@@ -139,7 +139,7 @@ const STATUS_LABELS = {
   no_show: "No-show",
 };
 
-const DENTISTS = ["Dr. Dinesh Kumar"];
+const DENTISTS = ["Dr. Kishore Kumar"];
 
 class HttpError extends Error {
   constructor(status, message) {
@@ -1210,7 +1210,7 @@ async function seed() {
   if (existing) {
     if (existing.email === "admin@smilecaredental.com") {
       await users.updateOne({ id: existing.id }, { $set: {
-        first_name: "Dr. Dinesh",
+        first_name: "Dr. Kishore",
         last_name: "Kumar",
         email: adminEmail,
         phone: CLINIC.phone,
@@ -1226,7 +1226,7 @@ async function seed() {
   }
   await users.insertOne({
     id: await nextId("clinic_users"),
-    first_name: "Dr. Dinesh",
+    first_name: "Dr. Kishore",
     last_name: "Kumar",
     email: adminEmail,
     phone: CLINIC.phone,

@@ -7,7 +7,7 @@ import { ArrowRight, CalendarCheck, Clock, MapPin, Phone } from "lucide-react";
 import { clinicImages } from "@/lib/images";
 
 const doctor = {
-  name: "Dr. Dinesh Kumar",
+  name: "Dr. Kishore Kumar",
   title: "Founder & Chief Dental Surgeon",
   focus: ["Family dentistry", "Restorative care", "Preventive care"],
   bio: "Every visit at Sri Saraswathi Dental Clinic starts with a clear explanation — what is happening, what it will cost, and what your options are. No jargon, no pressure, and a treatment plan you can actually follow.",
@@ -46,7 +46,7 @@ export function DentistProfiles() {
                 <div className="relative min-h-[240px] md:min-h-[420px]">
                   <img
                     src={doctor.image}
-                    alt="Dr. Dinesh Kumar, dentist at Sri Saraswathi Dental Clinic"
+                    alt="Dr. Kishore Kumar, dentist at Sri Saraswathi Dental Clinic"
                     width={1360}
                     height={907}
                     loading="lazy"
@@ -57,7 +57,7 @@ export function DentistProfiles() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4">
                     <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/70">
-                      Dr. Dinesh Kumar · Erode
+                      Dr. Kishore Kumar · Erode
                     </p>
                   </div>
                 </div>
@@ -82,7 +82,7 @@ export function DentistProfiles() {
                     className="inline-flex w-fit items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:bg-primary-800"
                   >
                     <CalendarCheck className="h-4 w-4" />
-                    Book with Dr. Dinesh
+                    Book with Dr. Kishore
                   </Link>
                 </div>
               </div>

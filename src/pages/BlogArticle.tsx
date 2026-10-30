@@ -153,7 +153,7 @@ export default function BlogArticlePage() {
                 <p className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-white/50">Next step</p>
                 <h2 className="mt-3 font-display text-[26px] leading-tight">Have a question about your own smile?</h2>
                 <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-white/60">
-                  Book a visit with Dr. Dinesh Kumar at Sri Saraswathi Dental Clinic, Erode — or call the clinic and we
+                  Book a visit with Dr. Kishore Kumar at Sri Saraswathi Dental Clinic, Erode — or call the clinic and we
                   will help you choose the right appointment.
                 </p>
                 <div className="mt-6 flex flex-wrap items-center gap-3">

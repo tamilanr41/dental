@@ -30,8 +30,8 @@ const notificationPrefs = [
 const auditLogs = [
   { action: "Invoice INV-2026-004 marked paid", user: "Maria Garcia", time: "Today, 11:42 AM" },
   { action: "New patient record created", user: "Riya Sharma", time: "Today, 11:08 AM" },
-  { action: "Treatment plan updated", user: "Dr. Dinesh Kumar", time: "Today, 10:26 AM" },
-  { action: "Inventory reorder raised", user: "Dr. Dinesh Kumar", time: "Yesterday, 5:14 PM" },
+  { action: "Treatment plan updated", user: "Dr. Kishore Kumar", time: "Today, 10:26 AM" },
+  { action: "Inventory reorder raised", user: "Dr. Kishore Kumar", time: "Yesterday, 5:14 PM" },
 ];
 
 export default function SettingsPage() {

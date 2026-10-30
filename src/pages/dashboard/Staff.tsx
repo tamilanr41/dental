@@ -20,7 +20,7 @@ type StaffMember = {
 };
 
 const initialStaff: StaffMember[] = [
-  { id: 1, name: "Dr. Dinesh Kumar", role: "Chief Dental Surgeon", department: "Clinical", status: "Active", todayPatients: 8, rating: 4.9 },
+  { id: 1, name: "Dr. Kishore Kumar", role: "Chief Dental Surgeon", department: "Clinical", status: "Active", todayPatients: 8, rating: 4.9 },
   { id: 5, name: "Lisa Anderson", role: "Dental Hygienist", department: "Hygiene", status: "Active", todayPatients: 5, rating: 4.8 },
   { id: 6, name: "Maria Garcia", role: "Receptionist", department: "Front Desk", status: "Active", todayPatients: 0, rating: 4.6 },
 ];

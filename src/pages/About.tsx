@@ -155,7 +155,7 @@ export default function AboutPage() {
                       />
                     </div>
                     <div>
-                      <p className="font-display text-lg font-medium text-foreground">Dr. Dinesh Kumar</p>
+                      <p className="font-display text-lg font-medium text-foreground">Dr. Kishore Kumar</p>
                       <p className="text-[13px] text-muted-foreground">Founder & Chief Dental Surgeon</p>
                     </div>
                   </div>

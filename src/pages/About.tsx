@@ -146,8 +146,8 @@ export default function AboutPage() {
                       <img
                         src={clinicImages.dentistPortrait}
                         alt="Dentist at Sri Saraswathi Dental Clinic"
-                        width={900}
-                        height={1200}
+                        width={1080}
+                        height={1620}
                         loading="eager"
                         fetchPriority="high"
                         decoding="async"

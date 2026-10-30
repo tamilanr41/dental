@@ -47,8 +47,8 @@ export function DentistProfiles() {
                   <img
                     src={doctor.image}
                     alt="Dr. Kishore Kumar, dentist at Sri Saraswathi Dental Clinic"
-                    width={1360}
-                    height={907}
+                    width={1080}
+                    height={1620}
                     loading="lazy"
                     decoding="async"
                     className="absolute inset-0 h-full w-full object-cover"

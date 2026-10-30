@@ -13,6 +13,7 @@ export const clinicImages = {
   logoMark: "/images/clinic/sri-saraswathi-mark.webp",
   heroDentalCare: "/images/clinic/hero-dental-care.webp",
   dentistPortrait: "/images/clinic/dentist-portrait.webp",
+  dentistHero: "/images/clinic/dentist-hero.webp",
   exterior: "/images/clinic/clinic-exterior.webp",
   practiceErode: "/images/clinic/practice-erode.webp",
   reception: "/images/clinic/clinic-reception.webp",

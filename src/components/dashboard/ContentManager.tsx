@@ -533,6 +533,15 @@ export function ContentManagerPanel({
           {fields.includes("mediaUrl") && (
             <MediaField
               label={type === "blog" ? "Featured image" : type === "hero" ? "Desktop image" : "Image (optional)"}
+              hint={
+                type === "hero"
+                  ? "Cropped into a portrait frame (4:4.6). Use a portrait photo at least 1080 × 1240 px, subject centred."
+                  : type === "blog"
+                    ? "Landscape works best — 1200 × 800 px or larger."
+                    : type === "gallery"
+                      ? "Square crop works best — at least 1000 × 1000 px."
+                      : "Use the largest original you have — at least 1000 px wide."
+              }
               accept={mediaAccept}
               value={draft.mediaUrl}
               onChange={(value) => update("mediaUrl", value)}
@@ -543,6 +552,7 @@ export function ContentManagerPanel({
           {fields.includes("mobileMediaUrl") && (
             <MediaField
               label="Mobile image (optional)"
+              hint="Shown on phones instead of the desktop image — portrait, at least 720 × 830 px."
               accept={mediaAccept}
               value={draft.mobileMediaUrl}
               onChange={(value) => update("mobileMediaUrl", value)}

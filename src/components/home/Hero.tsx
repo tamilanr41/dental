@@ -69,7 +69,7 @@ const defaultHeroSlides = [
     caption: "Thoughtful treatment · Erode",
   },
   {
-    image: clinicImages.dentistPortrait,
+    image: clinicImages.dentistHero,
     alt: "Dr. Kishore Kumar at Sri Saraswathi Dental Clinic",
     eyebrow: "Meet your dentist",
     badge: "Care led by experience",
@@ -289,8 +289,8 @@ export function Hero() {
                         : defaultHeroSlide.image
                     }
                     alt={heroBanner?.title || defaultHeroSlide.alt}
-                    width={900}
-                    height={675}
+                    width={1024}
+                    height={1178}
                     loading="eager"
                     fetchPriority={heroBannerIndex === 0 ? "high" : "auto"}
                     decoding="async"

@@ -43,7 +43,7 @@ export function DentistProfiles() {
           <ScrollReveal className="lg:col-span-3" direction="left">
             <div className="relative h-full overflow-hidden rounded-[26px] border border-border/80 bg-card shadow-card">
               <div className="grid h-full md:grid-cols-2">
-                <div className="relative min-h-[240px] md:min-h-[420px]">
+                <div className="relative aspect-[4/5] w-full md:aspect-auto md:h-full md:min-h-[420px]">
                   <img
                     src={doctor.image}
                     alt="Dr. Kishore Kumar, dentist at Sri Saraswathi Dental Clinic"
@@ -51,7 +51,7 @@ export function DentistProfiles() {
                     height={1620}
                     loading="lazy"
                     decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover"
+                    className="absolute inset-0 h-full w-full object-cover object-top"
                     sizes="(max-width: 768px) 100vw, 40vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />

@@ -3,6 +3,7 @@ import { ArrowUpRight, BadgeCheck, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { api, resolveApiAsset, type SiteContent, type SiteContentType } from "@/lib/api";
 import { formatArticleDate } from "@/lib/blog";
+import { clinicImages } from "@/lib/images";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 type SiteContentState = { items: SiteContent[]; loading: boolean };
@@ -139,17 +140,13 @@ export function ManagedContentSection({ type }: { type: "blog" | "offer" | "badg
             type === "blog" ? (
               <article key={item.id} className="group flex flex-col overflow-hidden rounded-[24px] border border-border/70 bg-card shadow-soft transition duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-lift">
                 <Link to={`/blog/${item.slug}`} className="block overflow-hidden">
-                  {item.mediaUrl ? (
-                    <img
-                      src={resolveApiAsset(item.mediaUrl)}
-                      alt={item.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="aspect-[16/10] w-full object-cover transition duration-700 group-hover:scale-[1.035]"
-                    />
-                  ) : (
-                    <div className="aspect-[16/10] w-full bg-gradient-to-br from-primary-50 via-secondary-50 to-accent-50" />
-                  )}
+                  <img
+                    src={item.mediaUrl ? resolveApiAsset(item.mediaUrl) : clinicImages.blogSmileCare}
+                    alt={item.mediaUrl ? item.title : "Dental care at Sri Saraswathi Dental Clinic"}
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-[16/10] w-full object-cover transition duration-700 group-hover:scale-[1.035]"
+                  />
                 </Link>
                 <div className="flex flex-1 flex-col p-5 md:p-6">
                   <p className="text-[9.5px] font-semibold uppercase tracking-[0.16em] text-primary-700">

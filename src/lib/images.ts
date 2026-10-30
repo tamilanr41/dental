@@ -20,6 +20,7 @@ export const clinicImages = {
   treatmentChair: "/images/clinic/treatment-chair.webp",
   treatmentRoom: "/images/clinic/treatment-room.webp",
   patientSmile: "/images/clinic/patient-smile.webp",
+  blogSmileCare: "/images/clinic/blog-smile-care.webp",
   waitingCorridor: "/images/clinic/waiting-corridor.webp",
   sterilizationRoom: "/images/clinic/sterilization-room.webp",
   operatoryChair: "/images/clinic/operatory-chair.webp",

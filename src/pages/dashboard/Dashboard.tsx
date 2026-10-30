@@ -469,13 +469,21 @@ export default function DashboardPage() {
                     .map((n) => n[0])
                     .slice(0, 2)
                     .join("")}
-                  <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-card bg-emerald-500" />
+                  <span
+                    className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-card ${
+                      patient.lastLoginAt ? "bg-emerald-500" : "bg-secondary-300"
+                    }`}
+                  />
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[12.5px] font-medium text-foreground">{patient.name}</p>
-                  <p className="truncate text-[11px] text-muted-foreground">{patient.phone}</p>
+                  <p className="truncate text-[11px] text-muted-foreground">
+                    {patient.lastLoginAt
+                      ? `Signed in ${relative(patient.lastLoginAt)} · ${patient.loginCount} sign-in${patient.loginCount === 1 ? "" : "s"}`
+                      : "Registered · no sign-in recorded"}
+                  </p>
                 </div>
-                <span className="text-[10.5px] text-muted-foreground">{relative(patient.joinedAt)}</span>
+                <span className="text-[10.5px] text-muted-foreground">Joined {relative(patient.joinedAt)}</span>
               </div>
             ))}
             {!loading && (summary?.recentPatients ?? []).length === 0 && (

@@ -71,6 +71,19 @@ export type SiteContent = {
 export type Slot = { time: string; remaining: number };
 export type Availability = { date: string; closed: boolean; slots: Slot[] };
 
+export type PatientAccount = {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  role: Role;
+  visits: number;
+  lastVisit: string | null;
+  joinedAt: string;
+  lastLoginAt: string | null;
+  loginCount: number;
+};
+
 export type AdminSummary = {
   today: string;
   counts: {
@@ -87,7 +100,8 @@ export type AdminSummary = {
   todaySchedule: Booking[];
   queue: Booking[];
   recent: Booking[];
-  recentPatients: { id: number; name: string; email: string; phone: string; joinedAt: string }[];
+  recentPatients: Pick<PatientAccount, "id" | "name" | "email" | "phone" | "role" | "joinedAt" | "lastLoginAt" | "loginCount">[];
+  recentLogins: { id: number; name: string; email: string; phone: string; lastLoginAt: string; loginCount: number }[];
 };
 
 export class ApiError extends Error {

@@ -44,6 +44,15 @@ const sidebarLinks = [
 
 type Notification = { id: number | string; title: string; detail: string; time: string; unread: boolean };
 
+const relativeTime = (iso: string) => {
+  const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.round(hours / 24)}d ago`;
+};
+
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -98,7 +107,16 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             id: `p-${patient.id}`,
             title: "New patient registered",
             detail: `${patient.name} · ${patient.phone}`,
-            time: "Just now",
+            time: relativeTime(patient.joinedAt),
+            unread: false,
+          });
+        });
+        data.recentLogins.forEach((patient) => {
+          items.push({
+            id: `login-${patient.id}`,
+            title: "Patient signed in",
+            detail: `${patient.name} · ${patient.email}`,
+            time: relativeTime(patient.lastLoginAt),
             unread: false,
           });
         });

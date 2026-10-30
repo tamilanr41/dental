@@ -887,6 +887,8 @@ app.post("/api/auth/register", async (req, res, next) => {
       password_hash: hashPassword(password),
       role: "patient",
       created_at: nowISO(),
+      last_login_at: nowISO(),
+      login_count: 1,
     };
     await users.insertOne(user);
     setSessionCookie(res, user);
@@ -905,6 +907,10 @@ app.post("/api/auth/login", async (req, res, next) => {
     if (!user || !verifyPassword(password, user.password_hash)) {
       throw new HttpError(401, "Invalid email or password.");
     }
+    const lastLoginAt = nowISO();
+    await users.updateOne({ id: user.id }, { $set: { last_login_at: lastLoginAt }, $inc: { login_count: 1 } });
+    user.last_login_at = lastLoginAt;
+    user.login_count = (user.login_count || 0) + 1;
     setSessionCookie(res, user);
     res.json({ user: publicUser(user) });
   } catch (error) {
@@ -1106,10 +1112,15 @@ app.get("/api/admin/summary", requireAdmin, async (_req, res, next) => {
       week.push({ date: iso, label: day.toLocaleDateString("en-IN", { weekday: "short" }), count });
     }
 
-    const [todayRows, recentRows, recentPatients, pending, confirmed, checkedIn, completed, cancelled, patientCount, totalBookings] = await Promise.all([
+    const [todayRows, recentRows, recentPatients, recentLogins, pending, confirmed, checkedIn, completed, cancelled, patientCount, totalBookings] = await Promise.all([
       bookings.find({ date: today, status: { $ne: "cancelled" } }).toArray(),
       bookings.find({}).sort({ id: -1 }).limit(5).toArray(),
       users.find({ role: "patient" }).sort({ id: -1 }).limit(4).toArray(),
+      users
+        .find({ role: "patient", last_login_at: { $exists: true, $ne: null } })
+        .sort({ last_login_at: -1 })
+        .limit(3)
+        .toArray(),
       bookings.countDocuments({ status: "pending" }),
       bookings.countDocuments({ status: "confirmed" }),
       bookings.countDocuments({ status: "checked_in" }),
@@ -1144,7 +1155,18 @@ app.get("/api/admin/summary", requireAdmin, async (_req, res, next) => {
         name: row.first_name + " " + row.last_name,
         email: row.email,
         phone: row.phone,
+        role: row.role,
         joinedAt: row.created_at,
+        lastLoginAt: row.last_login_at || null,
+        loginCount: row.login_count || 0,
+      })),
+      recentLogins: recentLogins.map((row) => ({
+        id: row.id,
+        name: row.first_name + " " + row.last_name,
+        email: row.email,
+        phone: row.phone,
+        lastLoginAt: row.last_login_at,
+        loginCount: row.login_count || 0,
       })),
     });
   } catch (error) {
@@ -1172,9 +1194,12 @@ app.get("/api/admin/patients", requireAdmin, async (_req, res, next) => {
           name: row.first_name + " " + row.last_name,
           email: row.email,
           phone: row.phone,
+          role: row.role,
           visits: stats.visits,
           lastVisit: stats.lastVisit ? formatDate(stats.lastVisit) : null,
           joinedAt: row.created_at,
+          lastLoginAt: row.last_login_at || null,
+          loginCount: row.login_count || 0,
         };
       }),
     });

@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/use-auth";
 import { useSiteContent } from "@/components/home/SiteContentSections";
 import { AnnouncementBanner } from "@/components/layout/AnnouncementBanner";
 import { Button } from "@/components/ui/Button";
+import { api, type Booking } from "@/lib/api";
 import {
   Menu,
   X,
@@ -17,6 +18,8 @@ import {
   LogOut,
   LayoutDashboard,
   CalendarPlus,
+  CalendarCheck,
+  UserRound,
   ArrowRight,
   Sparkles,
 } from "lucide-react";
@@ -54,6 +57,7 @@ export function Navbar() {
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [hasBooking, setHasBooking] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -73,6 +77,30 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (user?.role !== "patient") {
+      setHasBooking(false);
+      return;
+    }
+    let active = true;
+    const sync = () => {
+      api
+        .get<{ bookings: Booking[] }>("/api/bookings/mine")
+        .then((data) => {
+          if (active) setHasBooking(data.bookings.length > 0);
+        })
+        .catch(() => {
+          if (active) setHasBooking(false);
+        });
+    };
+    sync();
+    window.addEventListener("bookings:changed", sync);
+    return () => {
+      active = false;
+      window.removeEventListener("bookings:changed", sync);
+    };
+  }, [user?.id, user?.role, pathname]);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -229,11 +257,20 @@ export function Navbar() {
         <div className="hidden items-center gap-2 lg:flex">
           <a
             href="tel:+914244272494"
-            className="mr-1 hidden items-center gap-1.5 text-[13px] font-medium text-foreground/60 transition-colors hover:text-foreground xl:flex"
+            className="mr-1 hidden items-center gap-1.5 text-[13px] font-medium text-foreground/60 transition-colors hover:text-foreground 2xl:flex"
           >
             <Phone className="h-3.5 w-3.5" />
             0424 427 2494
           </a>
+          {hasBooking && (
+            <Link
+              to="/patient-portal/appointments"
+              className="hidden items-center gap-1.5 rounded-full bg-primary-50 px-3 py-2 text-[12.5px] font-semibold text-primary-800 transition-colors hover:bg-primary-100 xl:flex"
+            >
+              <CalendarCheck className="h-3.5 w-3.5" />
+              View my appointment
+            </Link>
+          )}
           {user ? (
             <div className="relative" ref={userMenuRef}>
               <button
@@ -283,14 +320,34 @@ export function Navbar() {
                           </Link>
                         )}
                         {user.role === "patient" && (
-                          <Link
-                            to="/booking"
-                            onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] text-secondary-700 transition-colors hover:bg-primary-50 hover:text-primary-800"
-                          >
-                            <CalendarPlus className="h-3.5 w-3.5" />
-                            Book appointment
-                          </Link>
+                          <>
+                            <Link
+                              to="/patient-portal"
+                              onClick={() => setUserMenuOpen(false)}
+                              className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] text-secondary-700 transition-colors hover:bg-primary-50 hover:text-primary-800"
+                            >
+                              <UserRound className="h-3.5 w-3.5" />
+                              Patient portal
+                            </Link>
+                            {hasBooking && (
+                              <Link
+                                to="/patient-portal/appointments"
+                                onClick={() => setUserMenuOpen(false)}
+                                className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] font-medium text-primary-800 transition-colors hover:bg-primary-50"
+                              >
+                                <CalendarCheck className="h-3.5 w-3.5" />
+                                View my appointment
+                              </Link>
+                            )}
+                            <Link
+                              to="/booking"
+                              onClick={() => setUserMenuOpen(false)}
+                              className="flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] text-secondary-700 transition-colors hover:bg-primary-50 hover:text-primary-800"
+                            >
+                              <CalendarPlus className="h-3.5 w-3.5" />
+                              Book appointment
+                            </Link>
+                          </>
                         )}
                         <button
                           type="button"
@@ -364,6 +421,32 @@ export function Navbar() {
                       Dashboard
                     </Link>
                   )}
+                </div>
+              )}
+              {user?.role === "patient" && (
+                <div className="mb-4 space-y-2">
+                  {hasBooking && (
+                    <Link
+                      to="/patient-portal/appointments"
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center justify-between rounded-2xl bg-primary-600 px-4 py-3.5 text-[14px] font-semibold text-white"
+                    >
+                      <span className="flex items-center gap-2">
+                        <CalendarCheck className="h-4 w-4" /> View my appointment
+                      </span>
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  )}
+                  <Link
+                    to="/patient-portal"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center justify-between rounded-xl border border-border/70 bg-card px-4 py-3 font-medium text-foreground"
+                  >
+                    <span className="flex items-center gap-2">
+                      <UserRound className="h-4 w-4 text-primary-700" /> Patient portal
+                    </span>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  </Link>
                 </div>
               )}
               <div className="space-y-1">

@@ -126,6 +126,7 @@ export default function BookingPage() {
       });
       setConfirmed(data.booking);
       setStep(4);
+      window.dispatchEvent(new Event("bookings:changed"));
       toast.success("Appointment booked — confirmation ready on WhatsApp");
     } catch (error) {
       if (error instanceof ApiError && error.status === 409) {

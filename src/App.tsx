@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
@@ -46,11 +46,7 @@ const DashboardMedia = lazy(() => import("@/pages/dashboard/MediaLibrary"));
 const DashboardSiteContent = lazy(() => import("@/pages/dashboard/SiteContent"));
 const PatientPortal = lazy(() => import("@/pages/patient-portal/PatientPortal"));
 const PatientPortalAppointments = lazy(() => import("@/pages/patient-portal/Appointments"));
-const PatientPortalBilling = lazy(() => import("@/pages/patient-portal/Billing"));
-const PatientPortalFamily = lazy(() => import("@/pages/patient-portal/Family"));
 const PatientPortalMessages = lazy(() => import("@/pages/patient-portal/Messages"));
-const PatientPortalRecords = lazy(() => import("@/pages/patient-portal/Records"));
-const PatientPortalTreatments = lazy(() => import("@/pages/patient-portal/Treatments"));
 
 function RouteLoading() {
   return (
@@ -107,12 +103,10 @@ function AppRoutes() {
         <Route element={<RequireRole role="patient" />}>
           <Route path="/patient-portal" element={<PatientPortal />} />
           <Route path="/patient-portal/appointments" element={<PatientPortalAppointments />} />
-          <Route path="/patient-portal/billing" element={<PatientPortalBilling />} />
-          <Route path="/patient-portal/family" element={<PatientPortalFamily />} />
           <Route path="/patient-portal/messages" element={<PatientPortalMessages />} />
-          <Route path="/patient-portal/records" element={<PatientPortalRecords />} />
-          <Route path="/patient-portal/treatments" element={<PatientPortalTreatments />} />
         </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
   );

@@ -12,10 +12,6 @@ interface PortalHeaderProps {
 const portalTabs = [
   { label: "Overview", href: "/patient-portal" },
   { label: "Appointments", href: "/patient-portal/appointments" },
-  { label: "Treatments", href: "/patient-portal/treatments" },
-  { label: "Records", href: "/patient-portal/records" },
-  { label: "Billing", href: "/patient-portal/billing" },
-  { label: "Family", href: "/patient-portal/family" },
   { label: "Messages", href: "/patient-portal/messages" },
 ];
 

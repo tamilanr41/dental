@@ -27,11 +27,7 @@ const routeLoaders: Record<string, () => Promise<unknown>> = {
   "/dashboard/treatments": () => import("@/pages/dashboard/Treatments"),
   "/patient-portal": () => import("@/pages/patient-portal/PatientPortal"),
   "/patient-portal/appointments": () => import("@/pages/patient-portal/Appointments"),
-  "/patient-portal/billing": () => import("@/pages/patient-portal/Billing"),
-  "/patient-portal/family": () => import("@/pages/patient-portal/Family"),
   "/patient-portal/messages": () => import("@/pages/patient-portal/Messages"),
-  "/patient-portal/records": () => import("@/pages/patient-portal/Records"),
-  "/patient-portal/treatments": () => import("@/pages/patient-portal/Treatments"),
 };
 
 const prefetchedRoutes = new Map<string, Promise<unknown>>();

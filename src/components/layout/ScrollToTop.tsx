@@ -28,11 +28,7 @@ const pageTitles: Record<string, string> = {
   "/dashboard/treatments": "Treatments",
   "/patient-portal": "Patient Portal",
   "/patient-portal/appointments": "My Appointments",
-  "/patient-portal/billing": "Billing & Payments",
-  "/patient-portal/family": "Family Members",
   "/patient-portal/messages": "Messages",
-  "/patient-portal/records": "My Records",
-  "/patient-portal/treatments": "My Treatments",
 };
 
 export function ScrollToTop() {

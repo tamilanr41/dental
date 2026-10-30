@@ -9,9 +9,7 @@ import {
   MessageCircle,
   MessageSquare,
   Phone,
-  Pill,
   ShieldCheck,
-  Users,
 } from "lucide-react";
 import { PortalHeader } from "@/components/patient-portal/PortalHeader";
 import { Button } from "@/components/ui/Button";
@@ -23,11 +21,7 @@ import { api, statusTone, type Booking } from "@/lib/api";
 const quickActions = [
   { label: "Book appointment", href: "/booking", icon: Calendar },
   { label: "My appointments", href: "/patient-portal/appointments", icon: Calendar },
-  { label: "View records", href: "/patient-portal/records", icon: FileText },
-  { label: "Billing", href: "/patient-portal/billing", icon: FileText },
   { label: "Messages", href: "/patient-portal/messages", icon: MessageSquare },
-  { label: "Prescriptions", href: "/patient-portal/records", icon: Pill },
-  { label: "Family members", href: "/patient-portal/family", icon: Users },
 ];
 
 function DateBadge({ date }: { date: string }) {
@@ -83,7 +77,7 @@ export default function PatientPortalPage() {
             Welcome back, <span className="italic text-primary-700">{user?.firstName ?? "there"}.</span>
           </>
         }
-        description="Your care, records and appointments in one calm place."
+        description="Your appointments and messages in one calm place."
         actions={
           <Button asChild size="lg">
             <Link to="/booking">
@@ -98,7 +92,7 @@ export default function PatientPortalPage() {
           <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             Quick actions
           </h2>
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {quickActions.map((action) => (
               <Link
                 key={action.label}
